@@ -16,5 +16,15 @@ namespace APP_B
         {
             InitializeComponent();
         }
+
+        private void btnLightOn_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnLightOff_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
