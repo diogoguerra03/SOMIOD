@@ -24,7 +24,7 @@ namespace APP_B
 
         private void btnLightOff_Click(object sender, EventArgs e)
         {
-
+            
         }
     }
 }
