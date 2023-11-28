@@ -72,7 +72,95 @@ namespace SOMIOD.Controllers
         [HttpPost]
         public IHttpActionResult CreateApplication()
         {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
 
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+         
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            if (xmlContent == null)
+            {
+                // Handle the case where no XML data is provided
+                return BadRequest("No XML data provided");
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+
+            try
+            {
+                XmlNode request = doc.SelectSingleNode("/request");
+                string res_type = request.Attributes["res_type"].InnerText;
+
+                if (res_type == "application")
+                {
+                    XmlNode application = doc.SelectSingleNode("//application/name");
+                    string name = application.InnerText;
+                    using (SqlConnection connection = new SqlConnection(connectionString))
+                    {
+                        try
+                        {
+                            connection.Open();
+                            SqlCommand command = new SqlCommand("INSERT INTO Application (name, creation_dt) VALUES (@name, @date)", connection);
+                            command.Parameters.AddWithValue("@date", DateTime.Now);
+                            command.Parameters.AddWithValue("@name", name);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                Console.WriteLine("Insertion successful!");
+                                return Ok();
+                            }
+                            else
+                            {
+                                Console.WriteLine("Insertion failed!");
+                                return InternalServerError();
+                            }
+                        }
+                        catch (SqlException ex)
+                        {
+                            // Handle the unique constraint violation
+                            if (ex.Number == 2601 || ex.Number == 2627)
+                            {
+                                Console.WriteLine("Name already exists. Choose a unique name.");
+                                return BadRequest("Nome deve ser unico");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Insertion failed: " + ex.Message);
+                                return BadRequest("Erro no insert da DB");
+                            }
+                        }
+                    }
+
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that might occur during XML processing
+                return InternalServerError(ex);
+            }
+        }
+
+        [Route("{application}")]
+        [HttpPost]
+        public IHttpActionResult CreateContainer(string application)
+        {
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -88,19 +176,14 @@ namespace SOMIOD.Controllers
                 return BadRequest("No data provided");
             }
 
-            // Convert the bytes to a string for further processing (if needed)
             string xmlContent = Encoding.UTF8.GetString(docBytes);
-
-
             if (xmlContent == null)
             {
                 // Handle the case where no XML data is provided
                 return BadRequest("No XML data provided");
             }
 
-
             XmlDocument doc = new XmlDocument();
-
             doc.LoadXml(xmlContent);
 
             try
@@ -108,33 +191,51 @@ namespace SOMIOD.Controllers
                 XmlNode request = doc.SelectSingleNode("/request");
                 string res_type = request.Attributes["res_type"].InnerText;
 
-                if (res_type == "application")
+                if (res_type == "container")
                 {
-                    XmlNode application = doc.SelectSingleNode("//application/name");
-                    string name = application.InnerText;
-
-
+                    XmlNode containerName = doc.SelectSingleNode("//container/name");
+                    string name = containerName.InnerText;
+                    int id = 0;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         try
                         {
                             connection.Open();
-                            SqlCommand command = new SqlCommand("INSERT INTO Application (name, creation_dt) VALUES (@name, @date)", connection);
-                            command.Parameters.AddWithValue("@date", DateTime.Now);
-                            command.Parameters.AddWithValue("@name", name);
-
-                            // Execute the command
-                            int rowsAffected = command.ExecuteNonQuery();
-
-                            // Check if the insertion was successful
-                            if (rowsAffected > 0)
+                            SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                            command.Parameters.AddWithValue("@name", application);
+                            SqlDataReader reader = command.ExecuteReader();
+                            int rowCount = 0;
+                            while (reader.Read())
                             {
-                                Console.WriteLine("Insertion successful!");
+                                id = reader.GetInt32(0);
+                                rowCount++;
+                            }
+                            reader.Close();
+                            if(rowCount > 0) {
+                                command = new SqlCommand("INSERT INTO Container (name, creation_dt, application_id) VALUES (@name, @date, @appId)", connection);
+                                command.Parameters.AddWithValue("@date", DateTime.Now);
+                                command.Parameters.AddWithValue("@name", name);
+                                command.Parameters.AddWithValue("@appId", id);
+
+                                int rowsAffected = command.ExecuteNonQuery();
+
+                                if (rowsAffected > 0)
+                                {
+                                    Console.WriteLine("Insertion successful!");
+                                    return Ok();
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Insertion failed!");
+                                    return InternalServerError();
+                                }
                             }
                             else
                             {
-                                Console.WriteLine("Insertion failed!");
+                                return BadRequest("Nao existe aplicação com esse nome");
                             }
+
+                            
                         }
                         catch (SqlException ex)
                         {
@@ -142,10 +243,12 @@ namespace SOMIOD.Controllers
                             if (ex.Number == 2601 || ex.Number == 2627)
                             {
                                 Console.WriteLine("Name already exists. Choose a unique name.");
+                                return BadRequest("Nome deve ser unico");
                             }
                             else
                             {
                                 Console.WriteLine("Insertion failed: " + ex.Message);
+                                return BadRequest("Erro no insert da DB");
                             }
                         }
                     }
@@ -155,7 +258,6 @@ namespace SOMIOD.Controllers
                 {
                     return BadRequest();
                 }
-                return Ok();
             }
             catch (Exception ex)
             {
@@ -163,6 +265,5 @@ namespace SOMIOD.Controllers
                 return InternalServerError(ex);
             }
         }
-
     }
 }
