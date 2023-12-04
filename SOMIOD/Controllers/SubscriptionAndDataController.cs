@@ -8,17 +8,18 @@ using System.Net.Http;
 using System.Text;
 using System.Web.Http;
 using System.Xml;
+using uPLibrary.Networking.M2Mqtt;
 
 namespace SOMIOD.Controllers
 {
     [RoutePrefix("api/somiod")]
-    public class SubscriptionController : ApiController
+    public class SubscriptionAndDataController : ApiController
     {
         string connectionString = SOMIOD.Properties.Settings.Default.ConnStr;
 
         [Route("{application}/{container}")]
         [HttpPost]
-        public IHttpActionResult CreateContainer(string application, string container)
+        public IHttpActionResult CreateSubOrData(string application, string container)
         {
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
@@ -135,6 +136,62 @@ namespace SOMIOD.Controllers
                         }
                     }
 
+                }
+                else if(res_type == "data")
+                {
+                    MqttClient mcClient = null;
+                    string[] mStrTopicsInfo = { container };
+                    string endpoint = null;
+                    XmlNode dataName = doc.SelectSingleNode("//data/name");
+                    string name = dataName.InnerText;
+                    using (SqlConnection connection = new SqlConnection(connectionString)) { 
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("SELECT id FROM Container WHERE name = @name", connection);
+                        command.Parameters.AddWithValue("@name", container);
+                        SqlDataReader reader = command.ExecuteReader();
+                        int rowCount = 0;
+                        int containerId = 0;
+                        while (reader.Read())
+                        {
+                            containerId = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                        command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId", connection);
+                        command.Parameters.AddWithValue("@conId", containerId);
+                        reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            endpoint = reader.GetString(0);
+                            if (endpoint.Substring(0, 4) == "mqtt")
+                            {
+                                mcClient = new MqttClient(IPAddress.Parse(endpoint.Substring(7)));
+                                mcClient.Connect(Guid.NewGuid().ToString());
+                                if (!mcClient.IsConnected)
+                                {
+                                    Console.WriteLine("Error connecting to message broker...");
+                                }
+                                mcClient.Publish(container, Encoding.UTF8.GetBytes(name));
+                            }
+                            else if (endpoint.Substring(0, 4) == "htttp")
+                            {
+                                //Fazer pedido HTTP
+                            }
+                            rowCount++;
+                        }
+                        if (rowCount > 0)
+                        {
+                            command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
+                            command.Parameters.AddWithValue("@date", DateTime.Now);
+                            command.Parameters.AddWithValue("@name", name);
+                            command.Parameters.AddWithValue("@content", "Teste"); //Mudar depois
+                            command.Parameters.AddWithValue("@conId", containerId);
+                            command.ExecuteNonQuery();
+                            return Ok();
+                        }
+                        return BadRequest();
+                    }
+                    
                 }
                 else
                 {
