@@ -125,5 +125,89 @@ namespace SOMIOD.Controllers
                 return InternalServerError(ex);
             }
         }
+
+        [Route("{application}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteContainer(string application)
+        {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            if (xmlContent == null)
+            {
+                // Handle the case where no XML data is provided
+                return BadRequest("No XML data provided");
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+            XmlNode request = doc.SelectSingleNode("/request");
+            string res_type = request.Attributes["res_type"].InnerText;
+            if (res_type == "container")
+            {
+                XmlNode containerName = doc.SelectSingleNode("//container/name");
+                string name = containerName.InnerText;
+                int id = 0;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                        command.Parameters.AddWithValue("@name", application);
+                        SqlDataReader reader = command.ExecuteReader();
+                        int rowCount = 0;
+                        while (reader.Read())
+                        {
+                            id = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                        if (rowCount > 0)
+                        {
+                            command = new SqlCommand("DELETE FROM Container WHERE Application_id = @appId AND name = @name", connection);
+                            command.Parameters.AddWithValue("@name", name);
+                            command.Parameters.AddWithValue("@appId", id);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                return Ok();
+                            }
+                            else
+                            {
+                                return NotFound();
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest("Nao existe aplicação com esse nome");
+                        }
+
+
+                    }
+                    catch (SqlException ex)
+                    {
+                        return NotFound();
+                    }
+                }
+            }
+            return NotFound();
+        }
+
     }
 }

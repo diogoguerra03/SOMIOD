@@ -50,6 +50,40 @@ namespace SOMIOD.Controllers
             {
                 XmlNode request = doc.SelectSingleNode("/request");
                 string res_type = request.Attributes["res_type"].InnerText;
+                int appId = 0;
+                int containerId = 0;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                    command.Parameters.AddWithValue("@name", application);
+                    SqlDataReader reader = command.ExecuteReader();
+                    int rowCount = 0;
+                    while (reader.Read())
+                    {
+                        appId = reader.GetInt32(0);
+                        rowCount++;
+                    }
+                    reader.Close();
+                    if (rowCount > 0)
+                    {
+                        command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
+                        command.Parameters.AddWithValue("@appId", appId);
+                        command.Parameters.AddWithValue("@name", container);
+                        reader = command.ExecuteReader();
+                        rowCount = 0;
+                        while (reader.Read())
+                        {
+                            containerId = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                    }
+                    else
+                    {
+                        return NotFound();
+                    }
+                 }
 
                 if (res_type == "subscription")
                 {
@@ -57,85 +91,29 @@ namespace SOMIOD.Controllers
                     string name = subscriptionName.InnerText;
                     XmlNode subscriptionEndpoint = doc.SelectSingleNode("//subscription/endpoint");
                     string endpoint = subscriptionEndpoint.InnerText;
-
-                    int appId = 0;
-                    int containerId = 0;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        try
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("INSERT INTO Subscription (name, creation_dt, container_id, event, endpoint) VALUES (@name, @date, @conId, @event, @endpoint)", connection);
+                        command.Parameters.AddWithValue("@date", DateTime.Now);
+                        command.Parameters.AddWithValue("@name", name);
+                        command.Parameters.AddWithValue("@conId", containerId);
+                        command.Parameters.AddWithValue("@event", "1");
+                        command.Parameters.AddWithValue("@endpoint", endpoint);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected > 0)
                         {
-                            connection.Open();
-                            SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
-                            command.Parameters.AddWithValue("@name", application);
-                            SqlDataReader reader = command.ExecuteReader();
-                            int rowCount = 0;
-                            while (reader.Read())
-                            {
-                                appId = reader.GetInt32(0);
-                                rowCount++;
-                            }
-                            reader.Close();
-                            if (rowCount > 0)
-                            {
-                                command = new SqlCommand("SELECT id FROM Container WHERE name = @name", connection);
-                                command.Parameters.AddWithValue("@name", container);
-                                reader = command.ExecuteReader();
-                                rowCount = 0;
-                                while (reader.Read())
-                                {
-                                    containerId = reader.GetInt32(0);
-                                    rowCount++;
-                                }
-                                reader.Close();
-                                if (rowCount > 0) { 
-
-                                    command = new SqlCommand("INSERT INTO Subscription (name, creation_dt, container_id, event, endpoint) VALUES (@name, @date, @conId, @event, @endpoint)", connection);
-                                    command.Parameters.AddWithValue("@date", DateTime.Now);
-                                    command.Parameters.AddWithValue("@name", name);
-                                    command.Parameters.AddWithValue("@conId", containerId);
-                                    command.Parameters.AddWithValue("@event", "1");
-                                    command.Parameters.AddWithValue("@endpoint", endpoint);
-
-                                    int rowsAffected = command.ExecuteNonQuery();
-
-                                    if (rowsAffected > 0)
-                                    {
-                                        Console.WriteLine("Insertion successful!");
-                                        return Ok();
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Insertion failed!");
-                                        return InternalServerError();
-                                    }
-                            }
-                            else
-                            {
-                                return BadRequest("Nao existe aplicação com esse nome");
-                            }
-                            }
-                            else
-                            {
-                                return BadRequest("Nao existe container com esse nome");
-                            }
-
+                            Console.WriteLine("Insertion successful!");
+                            return Ok();
                         }
-                        catch (SqlException ex)
+                        else
                         {
-                            // Handle the unique constraint violation
-                            if (ex.Number == 2601 || ex.Number == 2627)
-                            {
-                                Console.WriteLine("Name already exists. Choose a unique name.");
-                                return BadRequest("Nome deve ser unico");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Insertion failed: " + ex.Message);
-                                return BadRequest("Erro no insert da DB");
-                            }
+                            Console.WriteLine("Insertion failed!");
+                            return BadRequest("Nome deve ser unico");
                         }
                     }
-
                 }
                 else if(res_type == "data")
                 {
@@ -144,22 +122,12 @@ namespace SOMIOD.Controllers
                     string endpoint = null;
                     XmlNode dataName = doc.SelectSingleNode("//data/name");
                     string name = dataName.InnerText;
-                    using (SqlConnection connection = new SqlConnection(connectionString)) { 
-                        connection.Open();
-                        SqlCommand command = new SqlCommand("SELECT id FROM Container WHERE name = @name", connection);
-                        command.Parameters.AddWithValue("@name", container);
-                        SqlDataReader reader = command.ExecuteReader();
+                    using (SqlConnection connection = new SqlConnection(connectionString)) {
                         int rowCount = 0;
-                        int containerId = 0;
-                        while (reader.Read())
-                        {
-                            containerId = reader.GetInt32(0);
-                            rowCount++;
-                        }
-                        reader.Close();
-                        command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId", connection);
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId", connection);
                         command.Parameters.AddWithValue("@conId", containerId);
-                        reader = command.ExecuteReader();
+                        SqlDataReader reader = command.ExecuteReader();
                         while (reader.Read())
                         {
                             endpoint = reader.GetString(0);
@@ -179,6 +147,7 @@ namespace SOMIOD.Controllers
                             }
                             rowCount++;
                         }
+                        reader.Close();
                         if (rowCount > 0)
                         {
                             command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
@@ -201,7 +170,215 @@ namespace SOMIOD.Controllers
             catch (Exception ex)
             {
                 // Handle any exceptions that might occur during XML processing
-                return InternalServerError(ex);
+                return BadRequest("Nome tem de ser unico");
+            }
+        }
+
+        [Route("{application}/{container}/sub/{name}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteSubscription(string application, string container, string name)
+        {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            if (xmlContent == null)
+            {
+                // Handle the case where no XML data is provided
+                return BadRequest("No XML data provided");
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+
+            int appId = 0;
+            int containerId = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                    command.Parameters.AddWithValue("@name", application);
+                    SqlDataReader reader = command.ExecuteReader();
+                    int rowCount = 0;
+                    while (reader.Read())
+                    {
+                        appId = reader.GetInt32(0);
+                        rowCount++;
+                    }
+                    reader.Close();
+                    if (rowCount > 0)
+                    {
+                        command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
+                        command.Parameters.AddWithValue("@appId", appId);
+                        command.Parameters.AddWithValue("@name", container);
+                        reader = command.ExecuteReader();
+                        rowCount = 0;
+                        while (reader.Read())
+                        {
+                            containerId = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                        if (rowCount > 0)
+                        {
+
+                            command = new SqlCommand("DELETE FROM Subscription WHERE name = @name AND container_id = @conId", connection);
+                            command.Parameters.AddWithValue("@name", name);
+                            command.Parameters.AddWithValue("@conId", containerId);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                return Ok();
+                            }
+                            else
+                            {
+                                return InternalServerError();
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest("Nao existe aplicação com esse nome");
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Nao existe container com esse nome");
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    // Handle the unique constraint violation
+                    if (ex.Number == 2601 || ex.Number == 2627)
+                    {
+                        return BadRequest("Nome deve ser unico");
+                    }
+                    else
+                    {
+                        return BadRequest("Erro no insert da DB");
+                    }
+                }
+
+            }
+        }
+
+        [Route("{application}/{container}/data/{name}")]
+        [HttpDelete]
+        public IHttpActionResult DeleteData(string application, string container, string name)
+        {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            if (xmlContent == null)
+            {
+                // Handle the case where no XML data is provided
+                return BadRequest("No XML data provided");
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+
+            int appId = 0;
+            int containerId = 0;
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                    command.Parameters.AddWithValue("@name", application);
+                    SqlDataReader reader = command.ExecuteReader();
+                    int rowCount = 0;
+                    while (reader.Read())
+                    {
+                        appId = reader.GetInt32(0);
+                        rowCount++;
+                    }
+                    reader.Close();
+                    if (rowCount > 0)
+                    {
+                        command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
+                        command.Parameters.AddWithValue("@appId", appId);
+                        command.Parameters.AddWithValue("@name", container);
+                        reader = command.ExecuteReader();
+                        rowCount = 0;
+                        while (reader.Read())
+                        {
+                            containerId = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                        if (rowCount > 0)
+                        {
+
+                            command = new SqlCommand("DELETE FROM Data WHERE name = @name AND container_id = @conId", connection);
+                            command.Parameters.AddWithValue("@name", name);
+                            command.Parameters.AddWithValue("@conId", containerId);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                return Ok();
+                            }
+                            else
+                            {
+                                return InternalServerError();
+                            }
+                        }
+                        else
+                        {
+                            return BadRequest("Nao existe aplicação com esse nome");
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest("Nao existe container com esse nome");
+                    }
+
+                }
+                catch (SqlException ex)
+                {
+                    // Handle the unique constraint violation
+                    if (ex.Number == 2601 || ex.Number == 2627)
+                    {
+                        return BadRequest("Nome deve ser unico");
+                    }
+                    else
+                    {
+                        return BadRequest("Erro no insert da DB");
+                    }
+                }
+
             }
         }
     }

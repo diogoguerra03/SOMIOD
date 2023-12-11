@@ -156,5 +156,64 @@ namespace SOMIOD.Controllers
                 return InternalServerError(ex);
             }
         }
+        [Route("")]
+        [HttpDelete]
+        public IHttpActionResult DeleteApplication()
+        {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            if (xmlContent == null)
+            {
+                // Handle the case where no XML data is provided
+                return BadRequest("No XML data provided");
+            }
+
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+            XmlNode request = doc.SelectSingleNode("/request");
+            string res_type = request.Attributes["res_type"].InnerText;
+            if(res_type == "application")
+            {
+                XmlNode application = doc.SelectSingleNode("//application/name");
+                string name = application.InnerText;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("DELETE FROM Application WHERE name = @name", connection);
+                        command.Parameters.AddWithValue("@name", name);
+                        int rowsAffected = command.ExecuteNonQuery();
+                        if(rowsAffected > 0)
+                        {
+                            return Ok();
+                        }
+                        return NotFound();
+                    
+                    }
+                    catch (Exception)
+                    {
+
+                        return NotFound();
+                    }
+                }
+            }
+            return NotFound();
+
+        }
     }
 }

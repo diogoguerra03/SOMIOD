@@ -203,5 +203,206 @@ namespace APP_A
 
             MessageBox.Show(texto);
         }
+
+        private void deleteApp_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "application");
+            doc.AppendChild(root);
+            XmlElement application = doc.CreateElement("application");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "Lighting";
+            application.AppendChild(name);
+            root.AppendChild(application);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI);
+
+            request.Method = "DELETE";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Eliminado com sucesso");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show($"WebException: {ex.Message}");
+            }
+        }
+
+        private void deleteContainer_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "container");
+            doc.AppendChild(root);
+            XmlElement container = doc.CreateElement("container");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "light_bulb";
+            container.AppendChild(name);
+            root.AppendChild(container);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
+
+            request.Method = "DELETE";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Eliminado com sucesso");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show($"WebException: {ex.Message}");
+            }
+        }
+
+        private void DeleteSubscription_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "subscription");
+            doc.AppendChild(root);
+            XmlElement subscription = doc.CreateElement("subscription");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "sub1";
+            subscription.AppendChild(name);
+            root.AppendChild(subscription);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb/sub/"+name.InnerText);
+
+            request.Method = "DELETE";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Eliminado com sucesso");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show($"WebException: {ex.Message}");
+            }
+        }
+
+        private void Delete_Data_Click(object sender, EventArgs e)
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "data");
+            doc.AppendChild(root);
+            XmlElement data = doc.CreateElement("data");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "on";
+            data.AppendChild(name);
+            root.AppendChild(data);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb/data/" + name.InnerText);
+
+            request.Method = "DELETE";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Eliminado com sucesso");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show($"WebException: {ex.Message}");
+            }
+        }
     }
 }
