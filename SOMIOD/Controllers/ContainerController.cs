@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOMIOD.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.IO;
@@ -16,8 +17,38 @@ namespace SOMIOD.Controllers
     {
         string connectionString = SOMIOD.Properties.Settings.Default.ConnStr;
 
-        [Route("{application}")]
+
+        [HttpGet]
+        [Route("{name}")]
+        public IHttpActionResult GetApplication(string name)
+        {
+            Application application = null;
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand("SELECT * FROM Application WHERE name = @name", connection);
+                command.Parameters.AddWithValue("@name", name);
+                SqlDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+                    application = new Application();
+                    application.Id = reader.GetInt32(0);
+                    application.Name = reader.GetString(1);
+                    application.creation_dt = reader.GetDateTime(2);
+                }
+            }
+
+            if (application == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(application);
+        }
+
         [HttpPost]
+        [Route("{application}")]
         public IHttpActionResult CreateContainer(string application)
         {
             byte[] docBytes;
@@ -126,8 +157,8 @@ namespace SOMIOD.Controllers
             }
         }
 
-        [Route("{application}")]
         [HttpDelete]
+        [Route("{application}")]
         public IHttpActionResult DeleteContainer(string application)
         {
             byte[] docBytes;
@@ -208,6 +239,5 @@ namespace SOMIOD.Controllers
             }
             return NotFound();
         }
-
     }
 }
