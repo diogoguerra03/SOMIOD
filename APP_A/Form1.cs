@@ -206,32 +206,10 @@ namespace APP_A
 
         private void deleteApp_Click(object sender, EventArgs e)
         {
-            XmlDocument doc = new XmlDocument();
-            doc = new XmlDocument();
-            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
-            doc.AppendChild(dec);
-            XmlElement root = doc.CreateElement("request");
-            root.SetAttribute("res_type", "application");
-            doc.AppendChild(root);
-            XmlElement application = doc.CreateElement("application");
-            XmlElement name = doc.CreateElement("name");
-            name.InnerText = "Lighting";
-            application.AppendChild(name);
-            root.AppendChild(application);
-
-            string xmlContent = doc.OuterXml;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
 
             request.Method = "DELETE";
             request.ContentType = "application/xml";
-            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
-            request.ContentLength = xmlBytes.Length;
-
-            using (Stream requestStream = request.GetRequestStream())
-            {
-                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
-            }
 
             try
             {
@@ -257,31 +235,11 @@ namespace APP_A
 
         private void deleteContainer_Click(object sender, EventArgs e)
         {
-            XmlDocument doc = new XmlDocument();
-            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
-            doc.AppendChild(dec);
-            XmlElement root = doc.CreateElement("request");
-            root.SetAttribute("res_type", "container");
-            doc.AppendChild(root);
-            XmlElement container = doc.CreateElement("container");
-            XmlElement name = doc.CreateElement("name");
-            name.InnerText = "light_bulb";
-            container.AppendChild(name);
-            root.AppendChild(container);
 
-            string xmlContent = doc.OuterXml;
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb");
 
             request.Method = "DELETE";
             request.ContentType = "application/xml";
-            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
-            request.ContentLength = xmlBytes.Length;
-
-            using (Stream requestStream = request.GetRequestStream())
-            {
-                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
-            }
 
             try
             {
