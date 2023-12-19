@@ -332,5 +332,12 @@ namespace SOMIOD.Controllers
             return null;
 
         }
+
+        [HttpPut]
+        [Route("{application}/{container}")]
+        public IHttpActionResult PutContainer(string application, string container)
+        {
+            // update do container que se ecnontra dentro da aplicaçao
+        }
     }
 }

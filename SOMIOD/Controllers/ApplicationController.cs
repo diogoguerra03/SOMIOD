@@ -413,7 +413,7 @@ namespace SOMIOD.Controllers
                         else
                         {
                             Console.WriteLine("Insertion failed: " + ex.Message);
-                            return BadRequest("Erro no insert da DB");
+                            return BadRequest("Erro no update da DB");
                         }
                     }
                 }
