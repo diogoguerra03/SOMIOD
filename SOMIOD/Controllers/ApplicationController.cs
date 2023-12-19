@@ -18,16 +18,16 @@ namespace SOMIOD.Controllers
     public class ApplicationController : ApiController
     {
         string connectionString = SOMIOD.Properties.Settings.Default.ConnStr;
-   
+
         [HttpGet]
         [Route("")]
-        public IEnumerable<Application> GetAllApplications() 
+        public IEnumerable<Application> GetAllApplications()
         {
             List<Application> apps = new List<Application>();
             var headers = HttpContext.Current.Request.Headers;
             string somiodDiscoverHeaderValue = headers.Get("somiod-discover");
 
-            if(somiodDiscoverHeaderValue == "application")
+            if (somiodDiscoverHeaderValue == "application")
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -67,7 +67,7 @@ namespace SOMIOD.Controllers
             {
                 return BadRequest("No data provided");
             }
-         
+
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
@@ -329,6 +329,102 @@ namespace SOMIOD.Controllers
                 // Handle any exceptions that might occur during XML processing
                 return InternalServerError(ex);
             }
+        }
+
+        // Update application
+        [HttpPut]
+        [Route("{application}")]
+        public IHttpActionResult UpdateApplication(string application)
+        {
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+                return BadRequest("No data provided");
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+
+            try
+            {
+                XmlNode request = doc.SelectSingleNode("/request");
+                string res_type = request.Attributes["res_type"].InnerText;
+
+                if (res_type != "application")
+                {
+                    return BadRequest("Response type should be application");
+
+                }
+
+                XmlNode applicationName = doc.SelectSingleNode("//application/name");
+                string name = applicationName.InnerText;
+                int id = 0;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    try
+                    {
+                        connection.Open();
+                        SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                        command.Parameters.AddWithValue("@name", application);
+                        SqlDataReader reader = command.ExecuteReader();
+                        int rowCount = 0;
+                        while (reader.Read())
+                        {
+                            id = reader.GetInt32(0);
+                            rowCount++;
+                        }
+                        reader.Close();
+                        if (rowCount <= 0)
+                        {
+                            return BadRequest("Nao existe aplicação com esse nome");
+                        }
+
+                        command = new SqlCommand("UPDATE Application SET name = @name WHERE id = @id", connection);
+                        // FALTA O DATE
+                        command.Parameters.AddWithValue("@name", name);
+                        command.Parameters.AddWithValue("@id", id);
+
+                        int rowsAffected = command.ExecuteNonQuery();
+
+                        if (rowsAffected <= 0)
+                        {
+                            return BadRequest("Nao foi possivel efetuar o update");
+                        }
+
+                        Console.WriteLine("UPDATE SUCCESSFULL!!!!");
+                        return Ok();
+                    }
+                    catch (SqlException ex)
+                    {
+                        // Handle the unique constraint violation
+                        if (ex.Number == 2601 || ex.Number == 2627)
+                        {
+                            Console.WriteLine("Name already exists. Choose a unique name.");
+                            return BadRequest("Nome deve ser unico");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Insertion failed: " + ex.Message);
+                            return BadRequest("Erro no insert da DB");
+                        }
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that might occur during XML processing
+                return InternalServerError(ex);
+            }
+
         }
     }
 }

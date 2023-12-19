@@ -364,3 +364,7 @@ FodyWeavers.xsd
 SOMIOD/Properties/Settings.Designer.cs
 SOMIOD/Properties/Settings.settings
 SOMIOD/Web.config
+<<<<<<< Updated upstream
+=======
+APP_A/APP_A.csproj
+>>>>>>> Stashed changes
