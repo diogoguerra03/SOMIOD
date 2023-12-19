@@ -373,7 +373,7 @@ namespace APP_A
             doc.AppendChild(root);
             XmlElement application = doc.CreateElement("application");
             XmlElement name = doc.CreateElement("name");
-            name.InnerText = "LIGHT";
+            name.InnerText = "UPDATEEE!!";
             application.AppendChild(name);
             root.AppendChild(application);
 
@@ -393,7 +393,7 @@ namespace APP_A
 
             try
             {
-                // Get the response from the server
+                // Get the response from the server 
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Check if the request was successful
@@ -408,7 +408,26 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+                // Check if the exception has a response
+                if (ex.Response != null)
+                {
+                    // Get the response from the exception
+                    using (HttpWebResponse response = (HttpWebResponse)ex.Response)
+                    {
+                        // Read the error message from the response
+                        using (Stream errorStream = response.GetResponseStream())
+                        {
+                            StreamReader reader = new StreamReader(errorStream);
+                            string errorMessage = reader.ReadToEnd();
+
+                            MessageBox.Show($"WebException: {ex.Message}\nError Message: {errorMessage}");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"WebException: {ex.Message}");
+                }
             }
         }
     }
