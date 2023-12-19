@@ -361,3 +361,6 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+SOMIOD/Properties/Settings.Designer.cs
+SOMIOD/Properties/Settings.settings
+SOMIOD/Web.config
