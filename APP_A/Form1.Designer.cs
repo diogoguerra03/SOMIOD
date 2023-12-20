@@ -34,6 +34,7 @@
             this.DeleteSubscription = new System.Windows.Forms.Button();
             this.Delete_Data = new System.Windows.Forms.Button();
             this.buttonUpdateAppName = new System.Windows.Forms.Button();
+            this.buttonUpdateContainerName = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // deleteApp
@@ -86,11 +87,22 @@
             this.buttonUpdateAppName.UseVisualStyleBackColor = true;
             this.buttonUpdateAppName.Click += new System.EventHandler(this.buttonUpdateAppName_Click);
             // 
+            // buttonUpdateContainerName
+            // 
+            this.buttonUpdateContainerName.Location = new System.Drawing.Point(517, 223);
+            this.buttonUpdateContainerName.Name = "buttonUpdateContainerName";
+            this.buttonUpdateContainerName.Size = new System.Drawing.Size(171, 104);
+            this.buttonUpdateContainerName.TabIndex = 5;
+            this.buttonUpdateContainerName.Text = "Update container Name";
+            this.buttonUpdateContainerName.UseVisualStyleBackColor = true;
+            this.buttonUpdateContainerName.Click += new System.EventHandler(this.buttonUpdateContainerName_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(700, 554);
+            this.Controls.Add(this.buttonUpdateContainerName);
             this.Controls.Add(this.buttonUpdateAppName);
             this.Controls.Add(this.Delete_Data);
             this.Controls.Add(this.DeleteSubscription);
@@ -112,6 +124,7 @@
         private System.Windows.Forms.Button DeleteSubscription;
         private System.Windows.Forms.Button Delete_Data;
         private System.Windows.Forms.Button buttonUpdateAppName;
+        private System.Windows.Forms.Button buttonUpdateContainerName;
     }
 }
 

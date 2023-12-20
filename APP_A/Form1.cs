@@ -430,5 +430,74 @@ namespace APP_A
                 }
             }
         }
+
+        private void buttonUpdateContainerName_Click(object sender, EventArgs e)
+        {
+
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "container");
+            doc.AppendChild(root);
+            XmlElement application = doc.CreateElement("container");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "novo_nome_container";
+            application.AppendChild(name);
+            root.AppendChild(application);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/LIGHT/light_bulb");
+
+            request.Method = "PUT";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server 
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+
+                    MessageBox.Show("Nome atualizado com sucesso com sucesso");
+
+                }
+            }
+            catch (WebException ex)
+            {
+                // Check if the exception has a response
+                if (ex.Response != null)
+                {
+                    // Get the response from the exception
+                    using (HttpWebResponse response = (HttpWebResponse)ex.Response)
+                    {
+                        // Read the error message from the response
+                        using (Stream errorStream = response.GetResponseStream())
+                        {
+                            StreamReader reader = new StreamReader(errorStream);
+                            string errorMessage = reader.ReadToEnd();
+
+                            MessageBox.Show($"WebException: {ex.Message}\nError Message: {errorMessage}");
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show($"WebException: {ex.Message}");
+                }
+            }
+        }
     }
 }

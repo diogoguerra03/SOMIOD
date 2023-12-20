@@ -359,6 +359,24 @@ namespace SOMIOD.Controllers
 
             try
             {
+                XmlNode request = doc.SelectSingleNode("/request");
+                string res_type = request.Attributes["res_type"].InnerText;
+
+                if (res_type != "container")
+                {
+                    return BadRequest("Response type should be container");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that might occur during XML processing
+                return InternalServerError(ex);
+            }
+
+
+            try
+            {
                 XmlNode containerName = doc.SelectSingleNode("//container/name");
                 string name = containerName.InnerText;
 
@@ -381,8 +399,9 @@ namespace SOMIOD.Controllers
 
                     if (rowCount <= 0)
                     {
-                        return NotFound();
+                        return BadRequest("Application not found!");
                     }
+
 
                     // Descobrir o Id do container que de facto queremos atualizar que possua o id da aplicaçao
                     command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
@@ -399,7 +418,7 @@ namespace SOMIOD.Controllers
 
                     if (rowCount <= 0)
                     {
-                        return NotFound();
+                        return BadRequest("Container not found!" + container + appId + name);
                     }
 
                     // Atualizar o nome do container desejado
@@ -417,14 +436,20 @@ namespace SOMIOD.Controllers
                     return Ok();
 
                 }
-
-
-
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return BadRequest("Nome tem de ser unico");
+                // Handle the unique constraint violation
+                if (ex.Number == 2601 || ex.Number == 2627)
+                {
+                    Console.WriteLine("Name already exists. Choose a unique name.");
+                    return BadRequest("Nome deve ser unico");
+                }
+                else
+                {
+                    Console.WriteLine("Insertion failed: " + ex.Message);
+                    return BadRequest("Erro no update da DB");
+                }
             }
         }
     }
