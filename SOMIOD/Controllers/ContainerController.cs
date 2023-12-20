@@ -359,13 +359,15 @@ namespace SOMIOD.Controllers
 
             try
             {
-                XmlNode request = doc.SelectSingleNode("/request");
-                string res_type = request.Attributes["res_type"].InnerText;
+                XmlNode containerName = doc.SelectSingleNode("//container/name");
+                string name = containerName.InnerText;
+
                 int appId = 0;
                 int containerId = 0;
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
+                    // Descobrir o id da applicaçao que possui o container que queremos
                     SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
                     command.Parameters.AddWithValue("@name", application);
                     SqlDataReader reader = command.ExecuteReader();
@@ -382,6 +384,7 @@ namespace SOMIOD.Controllers
                         return NotFound();
                     }
 
+                    // Descobrir o Id do container que de facto queremos atualizar que possua o id da aplicaçao
                     command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
                     command.Parameters.AddWithValue("@appId", appId);
                     command.Parameters.AddWithValue("@name", container);
@@ -393,6 +396,25 @@ namespace SOMIOD.Controllers
                         rowCount++;
                     }
                     reader.Close();
+
+                    if (rowCount <= 0)
+                    {
+                        return NotFound();
+                    }
+
+                    // Atualizar o nome do container desejado
+                    command = new SqlCommand("UPDATE Container SET name = @name WHERE id= @id", connection);
+                    command.Parameters.AddWithValue("@name", name);
+                    command.Parameters.AddWithValue("@id", containerId);
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected <= 0)
+                    {
+                        return BadRequest("Nao foi possivel efetuar o update");
+                    }
+
+                    Console.WriteLine("UPDATE SUCCESSFULL!!!!");
+                    return Ok();
 
                 }
 
