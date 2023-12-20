@@ -198,7 +198,7 @@ namespace SOMIOD.Controllers
                                 }
                                 mcClient.Publish(container, Encoding.UTF8.GetBytes(name));
                             }
-                            else if (endpoint.Substring(0, 4) == "htttp")
+                            else if (endpoint.Substring(0, 4) == "http")
                             {
                                 //Fazer pedido HTTP
                             }
@@ -236,7 +236,7 @@ namespace SOMIOD.Controllers
         public IEnumerable<Object> GetContainer(string application, string container)
         {
 
-            Container containerObject= null;
+            Container containerObject = null;
             int appId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -298,7 +298,7 @@ namespace SOMIOD.Controllers
                 }
                 return datas;
             }
-            if(somiodDiscoverHeaderValue == "sub")
+            if (somiodDiscoverHeaderValue == "sub")
             {
                 List<Subscription> subs = new List<Subscription>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -338,6 +338,72 @@ namespace SOMIOD.Controllers
         public IHttpActionResult PutContainer(string application, string container)
         {
             // update do container que se ecnontra dentro da aplicaçao
+            byte[] docBytes;
+            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
+            {
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    stream.CopyTo(memoryStream);
+                    docBytes = memoryStream.ToArray();
+                }
+            }
+
+            if (docBytes == null || docBytes.Length == 0)
+            {
+                return BadRequest("No data provided");
+            }
+
+            string xmlContent = Encoding.UTF8.GetString(docBytes);
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(xmlContent);
+
+            try
+            {
+                XmlNode request = doc.SelectSingleNode("/request");
+                string res_type = request.Attributes["res_type"].InnerText;
+                int appId = 0;
+                int containerId = 0;
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand("SELECT id FROM Application WHERE name = @name", connection);
+                    command.Parameters.AddWithValue("@name", application);
+                    SqlDataReader reader = command.ExecuteReader();
+                    int rowCount = 0;
+                    while (reader.Read())
+                    {
+                        appId = reader.GetInt32(0);
+                        rowCount++;
+                    }
+                    reader.Close();
+
+                    if (rowCount <= 0)
+                    {
+                        return NotFound();
+                    }
+
+                    command = new SqlCommand("SELECT id FROM Container WHERE name = @name AND application_id = @appId", connection);
+                    command.Parameters.AddWithValue("@appId", appId);
+                    command.Parameters.AddWithValue("@name", container);
+                    reader = command.ExecuteReader();
+                    rowCount = 0;
+                    while (reader.Read())
+                    {
+                        containerId = reader.GetInt32(0);
+                        rowCount++;
+                    }
+                    reader.Close();
+
+                }
+
+
+
+            }
+            catch (Exception ex)
+            {
+                // Handle any exceptions that might occur during XML processing
+                return BadRequest("Nome tem de ser unico");
+            }
         }
     }
 }
