@@ -199,9 +199,18 @@ namespace APP_A
 
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-            string texto = "Received = " + Encoding.UTF8.GetString(e.Message) + " on topic " + e.Topic;
+            Image lampadaDesligada = Image.FromFile(@"lampadaDesligada.png");
+            Image lampadaLigada = Image.FromFile(@"lampadaLigada.png"); 
+            string receivedContent = Encoding.UTF8.GetString(e.Message);
 
-            MessageBox.Show(texto);
+            if(receivedContent == "1")
+            {
+                pictureBoxLamp.Image = lampadaLigada;
+            }
+            else if(receivedContent == "0")
+            {
+                pictureBoxLamp.Image = lampadaDesligada;
+            }
         }
 
         private void deleteApp_Click(object sender, EventArgs e)

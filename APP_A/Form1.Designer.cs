@@ -35,6 +35,8 @@
             this.Delete_Data = new System.Windows.Forms.Button();
             this.buttonUpdateAppName = new System.Windows.Forms.Button();
             this.buttonUpdateContainerName = new System.Windows.Forms.Button();
+            this.pictureBoxLamp = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLamp)).BeginInit();
             this.SuspendLayout();
             // 
             // deleteApp
@@ -49,7 +51,7 @@
             // 
             // deleteContainer
             // 
-            this.deleteContainer.Location = new System.Drawing.Point(214, 180);
+            this.deleteContainer.Location = new System.Drawing.Point(65, 175);
             this.deleteContainer.Name = "deleteContainer";
             this.deleteContainer.Size = new System.Drawing.Size(205, 147);
             this.deleteContainer.TabIndex = 1;
@@ -79,7 +81,7 @@
             // 
             // buttonUpdateAppName
             // 
-            this.buttonUpdateAppName.Location = new System.Drawing.Point(517, 68);
+            this.buttonUpdateAppName.Location = new System.Drawing.Point(631, 33);
             this.buttonUpdateAppName.Name = "buttonUpdateAppName";
             this.buttonUpdateAppName.Size = new System.Drawing.Size(171, 110);
             this.buttonUpdateAppName.TabIndex = 4;
@@ -89,7 +91,7 @@
             // 
             // buttonUpdateContainerName
             // 
-            this.buttonUpdateContainerName.Location = new System.Drawing.Point(517, 223);
+            this.buttonUpdateContainerName.Location = new System.Drawing.Point(650, 233);
             this.buttonUpdateContainerName.Name = "buttonUpdateContainerName";
             this.buttonUpdateContainerName.Size = new System.Drawing.Size(171, 104);
             this.buttonUpdateContainerName.TabIndex = 5;
@@ -97,11 +99,22 @@
             this.buttonUpdateContainerName.UseVisualStyleBackColor = true;
             this.buttonUpdateContainerName.Click += new System.EventHandler(this.buttonUpdateContainerName_Click);
             // 
+            // pictureBoxLamp
+            // 
+            this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligadaSemFundo;
+            this.pictureBoxLamp.Location = new System.Drawing.Point(379, 169);
+            this.pictureBoxLamp.Name = "pictureBoxLamp";
+            this.pictureBoxLamp.Size = new System.Drawing.Size(170, 168);
+            this.pictureBoxLamp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBoxLamp.TabIndex = 6;
+            this.pictureBoxLamp.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 554);
+            this.Controls.Add(this.pictureBoxLamp);
             this.Controls.Add(this.buttonUpdateContainerName);
             this.Controls.Add(this.buttonUpdateAppName);
             this.Controls.Add(this.Delete_Data);
@@ -113,6 +126,7 @@
             this.Name = "Form1";
             this.Text = "APP A";
             this.Load += new System.EventHandler(this.Form1_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLamp)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -125,6 +139,7 @@
         private System.Windows.Forms.Button Delete_Data;
         private System.Windows.Forms.Button buttonUpdateAppName;
         private System.Windows.Forms.Button buttonUpdateContainerName;
+        private System.Windows.Forms.PictureBox pictureBoxLamp;
     }
 }
 
