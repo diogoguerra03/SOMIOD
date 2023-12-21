@@ -178,6 +178,8 @@ namespace SOMIOD.Controllers
                     string endpoint = null;
                     XmlNode dataName = doc.SelectSingleNode("//data/name");
                     string name = dataName.InnerText;
+                    XmlNode dataContent = doc.SelectSingleNode("//data/content");
+                    string content = dataContent.InnerText;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         int rowCount = 0;
@@ -210,7 +212,7 @@ namespace SOMIOD.Controllers
                             command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
                             command.Parameters.AddWithValue("@date", DateTime.Now);
                             command.Parameters.AddWithValue("@name", name);
-                            command.Parameters.AddWithValue("@content", "Teste"); //Mudar depois
+                            command.Parameters.AddWithValue("@content", content); //Mudar depois
                             command.Parameters.AddWithValue("@conId", containerId);
                             command.ExecuteNonQuery();
                             return Ok();

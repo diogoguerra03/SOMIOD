@@ -101,7 +101,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(700, 554);
+            this.ClientSize = new System.Drawing.Size(936, 554);
             this.Controls.Add(this.buttonUpdateContainerName);
             this.Controls.Add(this.buttonUpdateAppName);
             this.Controls.Add(this.Delete_Data);

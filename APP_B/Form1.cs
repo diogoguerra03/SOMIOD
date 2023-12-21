@@ -23,15 +23,15 @@ namespace APP_B
 
         private void btnLightOn_Click(object sender, EventArgs e)
         {
-            createData("on");
+            createData("on", "1");
         }
 
         private void btnLightOff_Click(object sender, EventArgs e)
         {
-            createData("off");
+            createData("off", "0");
         }
 
-        public void createData(string valor)
+        public void createData(string valor, string content)
         {
             XmlDocument doc = new XmlDocument();
             XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
@@ -41,17 +41,21 @@ namespace APP_B
             doc.AppendChild(root);
             XmlElement data = doc.CreateElement("data");
             XmlElement name = doc.CreateElement("name");
-            
+            XmlElement contentElement = doc.CreateElement("content");
+
+            contentElement.InnerText = content;
+
             // create a timestamp
-            double timeStamp = (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+            long timeStamp = (long) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;
             name.InnerText = valor + timeStamp;
 
+            data.AppendChild(contentElement);
             data.AppendChild(name);
             root.AppendChild(data);
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb/");
 
             request.Method = "POST";
             request.ContentType = "application/xml";
