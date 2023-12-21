@@ -139,13 +139,13 @@
     <None Include="Resources\lampadaLigada.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\lampadaDesligada1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\lampadaLigada1.png" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\lampadaDesligada.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\lampadaLigadaSemFundo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\lampadaDesligadaSemFundo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />

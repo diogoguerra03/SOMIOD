@@ -101,10 +101,10 @@
             // 
             // pictureBoxLamp
             // 
-            this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligadaSemFundo;
-            this.pictureBoxLamp.Location = new System.Drawing.Point(379, 169);
+            this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligada;
+            this.pictureBoxLamp.Location = new System.Drawing.Point(354, 142);
             this.pictureBoxLamp.Name = "pictureBoxLamp";
-            this.pictureBoxLamp.Size = new System.Drawing.Size(170, 168);
+            this.pictureBoxLamp.Size = new System.Drawing.Size(243, 243);
             this.pictureBoxLamp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLamp.TabIndex = 6;
             this.pictureBoxLamp.TabStop = false;

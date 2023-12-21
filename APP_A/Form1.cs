@@ -1,4 +1,5 @@
-﻿using System;
+﻿using APP_A.Properties;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -199,8 +200,9 @@ namespace APP_A
 
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
-            Image lampadaDesligada = Image.FromFile(@"lampadaDesligada.png");
-            Image lampadaLigada = Image.FromFile(@"lampadaLigada.png"); 
+           
+            Image lampadaDesligada = Resources.lampadaDesligada;
+            Image lampadaLigada = Resources.lampadaLigada;
             string receivedContent = Encoding.UTF8.GetString(e.Message);
 
             if(receivedContent == "1")
