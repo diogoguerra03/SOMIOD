@@ -11,6 +11,8 @@ using System.Web;
 using System.Web.Http;
 using System.Xml;
 using System.Xml.Linq;
+using System.Xml.Serialization;
+
 
 namespace SOMIOD.Controllers
 {
@@ -21,7 +23,7 @@ namespace SOMIOD.Controllers
 
         [HttpGet]
         [Route("")]
-        public IEnumerable<Application> GetAllApplications()
+        public HttpResponseMessage GetAllApplications()
         {
             List<Application> apps = new List<Application>();
             var headers = HttpContext.Current.Request.Headers;
@@ -44,7 +46,30 @@ namespace SOMIOD.Controllers
                     }
                 }
             }
-            return apps;
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("response");
+            doc.AppendChild(root);
+            foreach (Application app in apps)
+            {
+                XmlElement application = doc.CreateElement("application");
+                XmlElement name = doc.CreateElement("name");
+                XmlElement id = doc.CreateElement("id");
+                XmlElement creationDate = doc.CreateElement("creation_dt");
+                id.InnerText = app.Id.ToString();
+                name.InnerText = app.Name;
+                creationDate.InnerText = app.creation_dt.ToString();
+                application.AppendChild(id);
+                application.AppendChild(name);
+                application.AppendChild(creationDate);
+                root.AppendChild(application);
+            }
+
+            string xmlContent = doc.OuterXml;
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            return response;
         }
 
 

@@ -7,6 +7,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -41,6 +42,7 @@ namespace APP_A
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI);
             request.Method = "GET";
             request.ContentType = "application/xml";
+            request.Headers.Add("somiod-discover", "application");
 
             try
             {
@@ -54,26 +56,31 @@ namespace APP_A
                     }
                     else
                     {
+                        byte[] docBytes;
                         // Get the response stream
                         using (Stream responseStream = response.GetResponseStream())
                         {
-                            // Read the response using StreamReader
-                            using (StreamReader reader = new StreamReader(responseStream))
+                            using (MemoryStream memoryStream = new MemoryStream())
                             {
-                                // Read the response string
-                                string responseString = reader.ReadToEnd();
-
-                                XmlDocument doc = new XmlDocument();
-                                doc.LoadXml(responseString);
-
-                                XmlNodeList applications = doc.GetElementsByTagName("application");
-
-                                foreach (XmlNode application in applications)
-                                {
-                                    listBoxApps.Items.Add(application["name"].InnerText);
-                                }
+                                responseStream.CopyTo(memoryStream);
+                                docBytes = memoryStream.ToArray();
                             }
                         }
+
+                        if (docBytes == null || docBytes.Length == 0)
+                        {
+                            MessageBox.Show("Erro ao ler xml");
+                            return;
+                        }
+                        string xmlContent = Encoding.UTF8.GetString(docBytes);
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(xmlContent);
+                        XmlNodeList applications = doc.SelectNodes("//application");
+                        foreach (XmlNode application in applications)
+                        {
+                            listBoxApps.Items.Add(application["name"].InnerText);
+                        }
+
                     }
                 }
             }
