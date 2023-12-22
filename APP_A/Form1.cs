@@ -1,4 +1,5 @@
 ﻿using APP_A.Properties;
+using Swashbuckle.Swagger;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -118,10 +119,8 @@ namespace APP_A
             {
                 requestStream.Write(xmlBytes, 0, xmlBytes.Length);
             }
-
             try
             {
-                // Get the response from the server
                 using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
                 {
                     // Check if the request was successful
@@ -137,8 +136,19 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+                
             }
+            
         }
 
         public void createContainer()
@@ -187,7 +197,15 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
             }
 
             mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
@@ -299,7 +317,14 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+                }
             }
         }
 
@@ -478,25 +503,13 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                // Check if the exception has a response
-                if (ex.Response != null)
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
                 {
-                    // Get the response from the exception
-                    using (HttpWebResponse response = (HttpWebResponse)ex.Response)
-                    {
-                        // Read the error message from the response
-                        using (Stream errorStream = response.GetResponseStream())
-                        {
-                            StreamReader reader = new StreamReader(errorStream);
-                            string errorMessage = reader.ReadToEnd();
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
 
-                            MessageBox.Show($"WebException: {ex.Message}\nError Message: {errorMessage}");
-                        }
-                    }
-                }
-                else
-                {
-                    MessageBox.Show($"WebException: {ex.Message}");
+                    MessageBox.Show(docResponse.InnerText);
                 }
             }
         }

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Web;
 using System.Web.Http;
@@ -76,8 +77,9 @@ namespace SOMIOD.Controllers
 
         [Route("")]
         [HttpPost]
-        public IHttpActionResult CreateApplication()
+        public HttpResponseMessage CreateApplication()
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -90,14 +92,15 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
-                // Handle the case where no XML data is provided
-                return BadRequest("No XML data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No XML data provided");
+                return response;
             }
 
             XmlDocument doc = new XmlDocument();
@@ -125,13 +128,13 @@ namespace SOMIOD.Controllers
 
                             if (rowsAffected > 0)
                             {
-                                Console.WriteLine("Insertion successful!");
-                                return Ok();
+                                response = Request.CreateResponse(HttpStatusCode.OK, "Criado com sucesso");
+                                return response;
                             }
                             else
                             {
-                                Console.WriteLine("Insertion failed!");
-                                return InternalServerError();
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro ao criar applicaçao");
+                                return response;
                             }
                         }
                         catch (SqlException ex)
@@ -139,13 +142,13 @@ namespace SOMIOD.Controllers
                             // Handle the unique constraint violation
                             if (ex.Number == 2601 || ex.Number == 2627)
                             {
-                                Console.WriteLine("Name already exists. Choose a unique name.");
-                                return BadRequest("Nome deve ser unico");
+                                response = Request.CreateResponse(HttpStatusCode.Conflict, "Nome de aplicação já existe");
+                                return response;
                             }
                             else
                             {
-                                Console.WriteLine("Insertion failed: " + ex.Message);
-                                return BadRequest("Erro no insert da DB");
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro no insert da DB");
+                                return response;
                             }
                         }
                     }
@@ -153,20 +156,23 @@ namespace SOMIOD.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro no res_type");
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return InternalServerError(ex);
+
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return response;
             }
         }
 
         [Route("{application}")]
         [HttpDelete]
-        public IHttpActionResult DeleteApplication(string application)
+        public HttpResponseMessage DeleteApplication(string application)
         {
+            HttpResponseMessage response;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
@@ -177,15 +183,17 @@ namespace SOMIOD.Controllers
                     int rowsAffected = command.ExecuteNonQuery();
                     if (rowsAffected > 0)
                     {
-                        return Ok();
+                        response = Request.CreateResponse(HttpStatusCode.OK, "Eliminado com sucesso");
+                        return response;
                     }
-                    return NotFound();
+                    response = Request.CreateResponse(HttpStatusCode.NotFound, "Nao foi encontrada nenhuma aplicaçao com o nome "+ application);
+                    return response;
 
                 }
                 catch (Exception)
                 {
-
-                    return NotFound();
+                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a eliminar da BD");
+                    return response;
                 }
             }
         }
@@ -221,7 +229,7 @@ namespace SOMIOD.Controllers
             var headers = HttpContext.Current.Request.Headers;
             string somiodDiscoverHeaderValue = headers.Get("somiod-discover");
 
-            if (somiodDiscoverHeaderValue == "application")
+            if (somiodDiscoverHeaderValue == "container")
             {
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -248,8 +256,9 @@ namespace SOMIOD.Controllers
 
         [HttpPost]
         [Route("{application}")]
-        public IHttpActionResult CreateContainerOnApplication(string application)
+        public HttpResponseMessage CreateContainerOnApplication(string application)
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -262,14 +271,15 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
-                // Handle the case where no XML data is provided
-                return BadRequest("No XML data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a criar o XML");
+                return response;
             }
 
             XmlDocument doc = new XmlDocument();
@@ -311,18 +321,19 @@ namespace SOMIOD.Controllers
 
                                 if (rowsAffected > 0)
                                 {
-                                    Console.WriteLine("Insertion successful!");
-                                    return Ok();
+                                    response = Request.CreateResponse(HttpStatusCode.OK);
+                                    return response;
                                 }
                                 else
                                 {
-                                    Console.WriteLine("Insertion failed!");
-                                    return InternalServerError();
+                                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Nao foi possivel inserir na BD");
+                                    return response;
                                 }
                             }
                             else
                             {
-                                return BadRequest("Nao existe aplicação com esse nome");
+                                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe aplicação com esse nome");
+                                return response;
                             }
 
 
@@ -332,13 +343,13 @@ namespace SOMIOD.Controllers
                             // Handle the unique constraint violation
                             if (ex.Number == 2601 || ex.Number == 2627)
                             {
-                                Console.WriteLine("Name already exists. Choose a unique name.");
-                                return BadRequest("Nome deve ser unico");
+                                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nome do container tem de ser unico");
+                                return response;
                             }
                             else
                             {
-                                Console.WriteLine("Insertion failed: " + ex.Message);
-                                return BadRequest("Erro no insert da DB");
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a inserir na BD");
+                                return response;
                             }
                         }
                     }
@@ -346,21 +357,23 @@ namespace SOMIOD.Controllers
                 }
                 else
                 {
-                    return BadRequest();
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "res_type inválido");
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return InternalServerError(ex);
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return response;
             }
         }
 
         // Update application
         [HttpPut]
         [Route("{application}")]
-        public IHttpActionResult UpdateApplication(string application)
+        public HttpResponseMessage UpdateApplication(string application)
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -371,8 +384,10 @@ namespace SOMIOD.Controllers
                 }
             }
 
-            if (docBytes == null || docBytes.Length == 0)
-                return BadRequest("No data provided");
+            if (docBytes == null || docBytes.Length == 0) { 
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
+            }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             XmlDocument doc = new XmlDocument();
@@ -385,7 +400,8 @@ namespace SOMIOD.Controllers
 
                 if (res_type != "application")
                 {
-                    return BadRequest("Response type should be application");
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "res_type incorreto");
+                    return response;
 
                 }
 
@@ -409,7 +425,8 @@ namespace SOMIOD.Controllers
                         reader.Close();
                         if (rowCount <= 0)
                         {
-                            return BadRequest("Nao existe aplicação com esse nome");
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe aplicaçao com esse nome");
+                            return response;
                         }
 
                         command = new SqlCommand("UPDATE Application SET name = @name WHERE id = @id", connection);
@@ -421,24 +438,26 @@ namespace SOMIOD.Controllers
 
                         if (rowsAffected <= 0)
                         {
-                            return BadRequest("Nao foi possivel efetuar o update");
+                            response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a atualizar os dados da aplicaçao");
+                            return response;
                         }
 
                         Console.WriteLine("UPDATE SUCCESSFULL!!!!");
-                        return Ok();
+                        response = Request.CreateResponse(HttpStatusCode.OK);
+                        return response;
                     }
                     catch (SqlException ex)
                     {
                         // Handle the unique constraint violation
                         if (ex.Number == 2601 || ex.Number == 2627)
                         {
-                            Console.WriteLine("Name already exists. Choose a unique name.");
-                            return BadRequest("Nome deve ser unico");
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nome da aplicação ja existe");
+                            return response;
                         }
                         else
                         {
-                            Console.WriteLine("Insertion failed: " + ex.Message);
-                            return BadRequest("Erro no update da DB");
+                            response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a atualizar os dados da aplicaçao");
+                            return response;
                         }
                     }
                 }
@@ -446,8 +465,8 @@ namespace SOMIOD.Controllers
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return InternalServerError(ex);
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return response;
             }
 
         }
