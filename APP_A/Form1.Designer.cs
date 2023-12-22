@@ -36,12 +36,13 @@
             this.buttonUpdateAppName = new System.Windows.Forms.Button();
             this.buttonUpdateContainerName = new System.Windows.Forms.Button();
             this.pictureBoxLamp = new System.Windows.Forms.PictureBox();
+            this.listBoxApps = new System.Windows.Forms.ListBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLamp)).BeginInit();
             this.SuspendLayout();
             // 
             // deleteApp
             // 
-            this.deleteApp.Location = new System.Drawing.Point(120, 33);
+            this.deleteApp.Location = new System.Drawing.Point(12, 12);
             this.deleteApp.Name = "deleteApp";
             this.deleteApp.Size = new System.Drawing.Size(232, 59);
             this.deleteApp.TabIndex = 0;
@@ -51,9 +52,9 @@
             // 
             // deleteContainer
             // 
-            this.deleteContainer.Location = new System.Drawing.Point(65, 175);
+            this.deleteContainer.Location = new System.Drawing.Point(12, 77);
             this.deleteContainer.Name = "deleteContainer";
-            this.deleteContainer.Size = new System.Drawing.Size(205, 147);
+            this.deleteContainer.Size = new System.Drawing.Size(232, 66);
             this.deleteContainer.TabIndex = 1;
             this.deleteContainer.Text = "DELETE CONTAINER";
             this.deleteContainer.UseVisualStyleBackColor = true;
@@ -61,9 +62,9 @@
             // 
             // DeleteSubscription
             // 
-            this.DeleteSubscription.Location = new System.Drawing.Point(120, 402);
+            this.DeleteSubscription.Location = new System.Drawing.Point(12, 149);
             this.DeleteSubscription.Name = "DeleteSubscription";
-            this.DeleteSubscription.Size = new System.Drawing.Size(126, 58);
+            this.DeleteSubscription.Size = new System.Drawing.Size(232, 61);
             this.DeleteSubscription.TabIndex = 2;
             this.DeleteSubscription.Text = "Delete Sub";
             this.DeleteSubscription.UseVisualStyleBackColor = true;
@@ -71,9 +72,9 @@
             // 
             // Delete_Data
             // 
-            this.Delete_Data.Location = new System.Drawing.Point(395, 391);
+            this.Delete_Data.Location = new System.Drawing.Point(12, 216);
             this.Delete_Data.Name = "Delete_Data";
-            this.Delete_Data.Size = new System.Drawing.Size(202, 111);
+            this.Delete_Data.Size = new System.Drawing.Size(232, 58);
             this.Delete_Data.TabIndex = 3;
             this.Delete_Data.Text = "Delete Data";
             this.Delete_Data.UseVisualStyleBackColor = true;
@@ -81,9 +82,9 @@
             // 
             // buttonUpdateAppName
             // 
-            this.buttonUpdateAppName.Location = new System.Drawing.Point(631, 33);
+            this.buttonUpdateAppName.Location = new System.Drawing.Point(12, 280);
             this.buttonUpdateAppName.Name = "buttonUpdateAppName";
-            this.buttonUpdateAppName.Size = new System.Drawing.Size(171, 110);
+            this.buttonUpdateAppName.Size = new System.Drawing.Size(232, 62);
             this.buttonUpdateAppName.TabIndex = 4;
             this.buttonUpdateAppName.Text = "Update app name";
             this.buttonUpdateAppName.UseVisualStyleBackColor = true;
@@ -91,9 +92,9 @@
             // 
             // buttonUpdateContainerName
             // 
-            this.buttonUpdateContainerName.Location = new System.Drawing.Point(650, 233);
+            this.buttonUpdateContainerName.Location = new System.Drawing.Point(12, 348);
             this.buttonUpdateContainerName.Name = "buttonUpdateContainerName";
-            this.buttonUpdateContainerName.Size = new System.Drawing.Size(171, 104);
+            this.buttonUpdateContainerName.Size = new System.Drawing.Size(232, 61);
             this.buttonUpdateContainerName.TabIndex = 5;
             this.buttonUpdateContainerName.Text = "Update container Name";
             this.buttonUpdateContainerName.UseVisualStyleBackColor = true;
@@ -102,18 +103,28 @@
             // pictureBoxLamp
             // 
             this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligada;
-            this.pictureBoxLamp.Location = new System.Drawing.Point(354, 142);
+            this.pictureBoxLamp.Location = new System.Drawing.Point(681, 12);
             this.pictureBoxLamp.Name = "pictureBoxLamp";
             this.pictureBoxLamp.Size = new System.Drawing.Size(243, 243);
             this.pictureBoxLamp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLamp.TabIndex = 6;
             this.pictureBoxLamp.TabStop = false;
             // 
+            // listBoxApps
+            // 
+            this.listBoxApps.FormattingEnabled = true;
+            this.listBoxApps.ItemHeight = 16;
+            this.listBoxApps.Location = new System.Drawing.Point(266, 12);
+            this.listBoxApps.Name = "listBoxApps";
+            this.listBoxApps.Size = new System.Drawing.Size(390, 260);
+            this.listBoxApps.TabIndex = 7;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(936, 554);
+            this.Controls.Add(this.listBoxApps);
             this.Controls.Add(this.pictureBoxLamp);
             this.Controls.Add(this.buttonUpdateContainerName);
             this.Controls.Add(this.buttonUpdateAppName);
@@ -140,6 +151,7 @@
         private System.Windows.Forms.Button buttonUpdateAppName;
         private System.Windows.Forms.Button buttonUpdateContainerName;
         private System.Windows.Forms.PictureBox pictureBoxLamp;
+        private System.Windows.Forms.ListBox listBoxApps;
     }
 }
 

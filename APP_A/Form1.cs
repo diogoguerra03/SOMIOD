@@ -30,6 +30,58 @@ namespace APP_A
             createApplication();
             createContainer();
             createSubscription();
+            loadListBoxApps();
+        }
+
+        private void loadListBoxApps()
+        {
+            listBoxApps.Items.Clear();
+
+            // request to the server for the list of applications
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI);
+            request.Method = "GET";
+            request.ContentType = "application/xml";
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        // Get the response stream
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            // Read the response using StreamReader
+                            using (StreamReader reader = new StreamReader(responseStream))
+                            {
+                                // Read the response string
+                                string responseString = reader.ReadToEnd();
+
+                                XmlDocument doc = new XmlDocument();
+                                doc.LoadXml(responseString);
+
+                                XmlNodeList applications = doc.GetElementsByTagName("application");
+
+                                foreach (XmlNode application in applications)
+                                {
+                                    listBoxApps.Items.Add(application["name"].InnerText);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                MessageBox.Show($"WebException: {ex.Message}");
+            }
+
         }
 
         public void createApplication()
