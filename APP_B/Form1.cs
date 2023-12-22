@@ -85,7 +85,14 @@ namespace APP_B
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+                }
             }
 
         }

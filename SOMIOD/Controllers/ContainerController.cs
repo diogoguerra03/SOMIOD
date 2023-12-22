@@ -22,8 +22,9 @@ namespace SOMIOD.Controllers
 
         [HttpDelete]
         [Route("{application}/{container}")]
-        public IHttpActionResult DeleteContainer(string application, string container)
+        public HttpResponseMessage DeleteContainer(string application, string container)
         {
+            HttpResponseMessage response;
             int id = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -50,23 +51,26 @@ namespace SOMIOD.Controllers
 
                         if (rowsAffected > 0)
                         {
-                            return Ok();
+                            response = Request.CreateResponse(HttpStatusCode.OK);
+                            return response;
                         }
                         else
                         {
-                            return NotFound();
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe um container com o nome "+container);
+                            return response;
                         }
                     }
                     else
                     {
-                        return BadRequest("Nao existe aplicação com esse nome");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe aplicaçao com o nome" + application);
+                        return response;
                     }
-
 
                 }
                 catch (SqlException ex)
                 {
-                    return NotFound();
+                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro ao dar delete da BD " + ex);
+                    return response;
                 }
             }
         }
@@ -75,8 +79,9 @@ namespace SOMIOD.Controllers
 
         [Route("{application}/{container}")]
         [HttpPost]
-        public IHttpActionResult CreateSubOrDataOnContainer(string application, string container)
+        public HttpResponseMessage CreateSubOrDataOnContainer(string application, string container)
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -89,14 +94,15 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
-                // Handle the case where no XML data is provided
-                return BadRequest("No XML data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
+                return response;
             }
 
             XmlDocument doc = new XmlDocument();
@@ -134,10 +140,16 @@ namespace SOMIOD.Controllers
                             rowCount++;
                         }
                         reader.Close();
+                        if(rowCount < 1)
+                        {
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe um container com o nome " + container);
+                            return response;
+                        }
                     }
                     else
                     {
-                        return NotFound();
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe uma aplicaçao com o nome "+ application);
+                        return response;
                     }
                 }
 
@@ -149,25 +161,42 @@ namespace SOMIOD.Controllers
                     string endpoint = subscriptionEndpoint.InnerText;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        connection.Open();
-                        SqlCommand command = new SqlCommand("INSERT INTO Subscription (name, creation_dt, container_id, event, endpoint) VALUES (@name, @date, @conId, @event, @endpoint)", connection);
-                        command.Parameters.AddWithValue("@date", DateTime.Now);
-                        command.Parameters.AddWithValue("@name", name);
-                        command.Parameters.AddWithValue("@conId", containerId);
-                        command.Parameters.AddWithValue("@event", "1");
-                        command.Parameters.AddWithValue("@endpoint", endpoint);
-
-                        int rowsAffected = command.ExecuteNonQuery();
-
-                        if (rowsAffected > 0)
+                        try
                         {
-                            Console.WriteLine("Insertion successful!");
-                            return Ok();
+                            connection.Open();
+                            SqlCommand command = new SqlCommand("INSERT INTO Subscription (name, creation_dt, container_id, event, endpoint) VALUES (@name, @date, @conId, @event, @endpoint)", connection);
+                            command.Parameters.AddWithValue("@date", DateTime.Now);
+                            command.Parameters.AddWithValue("@name", name);
+                            command.Parameters.AddWithValue("@conId", containerId);
+                            command.Parameters.AddWithValue("@event", "1");
+                            command.Parameters.AddWithValue("@endpoint", endpoint);
+
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            if (rowsAffected > 0)
+                            {
+                                response = Request.CreateResponse(HttpStatusCode.OK);
+                                return response;
+                            }
+                            else
+                            {
+                                response = Request.CreateResponse(HttpStatusCode.BadRequest, "O nome tem de ser unico");
+                                return response;
+                            }
                         }
-                        else
+                        catch (SqlException ex)
                         {
-                            Console.WriteLine("Insertion failed!");
-                            return BadRequest("Nome deve ser unico");
+
+                            if (ex.Number == 2601 || ex.Number == 2627)
+                            {
+                                response = Request.CreateResponse(HttpStatusCode.Conflict, "Nome da subscricao já existe");
+                                return response;
+                            }
+                            else
+                            {
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro no insert da DB");
+                                return response;
+                            }
                         }
                     }
                 }
@@ -209,27 +238,47 @@ namespace SOMIOD.Controllers
                         reader.Close();
                         if (rowCount > 0)
                         {
-                            command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
-                            command.Parameters.AddWithValue("@date", DateTime.Now);
-                            command.Parameters.AddWithValue("@name", name);
-                            command.Parameters.AddWithValue("@content", content); //Mudar depois
-                            command.Parameters.AddWithValue("@conId", containerId);
-                            command.ExecuteNonQuery();
-                            return Ok();
+                            try
+                            {
+                                command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
+                                command.Parameters.AddWithValue("@date", DateTime.Now);
+                                command.Parameters.AddWithValue("@name", name);
+                                command.Parameters.AddWithValue("@content", content); //Mudar depois
+                                command.Parameters.AddWithValue("@conId", containerId);
+                                command.ExecuteNonQuery();
+                                response = Request.CreateResponse(HttpStatusCode.OK);
+                                return response;
+                            }
+                            catch (SqlException ex)
+                            {
+                                if (ex.Number == 2601 || ex.Number == 2627)
+                                {
+                                    response = Request.CreateResponse(HttpStatusCode.Conflict, "Nome de data já existe");
+                                    return response;
+                                }
+                                else
+                                {
+                                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro no insert da DB");
+                                    return response;
+                                }
+                            } 
                         }
-                        return BadRequest();
+                        response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a inserir no DB");
+                        return response;
                     }
 
                 }
                 else
                 {
-                    return BadRequest();
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "res_type inválido");
+                    return response;
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return BadRequest("Nome tem de ser unico");
+
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return response;
             }
         }
 
@@ -337,8 +386,9 @@ namespace SOMIOD.Controllers
 
         [HttpPut]
         [Route("{application}/{container}")]
-        public IHttpActionResult PutContainer(string application, string container)
+        public HttpResponseMessage PutContainer(string application, string container)
         {
+            HttpResponseMessage response;
             // update do container que se ecnontra dentro da aplicaçao
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
@@ -352,7 +402,8 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
@@ -366,14 +417,15 @@ namespace SOMIOD.Controllers
 
                 if (res_type != "container")
                 {
-                    return BadRequest("Response type should be container");
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "res_type inválido");
+                    return response;
 
                 }
             }
             catch (Exception ex)
             {
-                // Handle any exceptions that might occur during XML processing
-                return InternalServerError(ex);
+                response = Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return response;
             }
 
 
@@ -401,7 +453,8 @@ namespace SOMIOD.Controllers
 
                     if (rowCount <= 0)
                     {
-                        return BadRequest("Application not found!");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Aplicação com o nome "+ application +" nao existe");
+                        return response;
                     }
 
 
@@ -420,7 +473,8 @@ namespace SOMIOD.Controllers
 
                     if (rowCount <= 0)
                     {
-                        return BadRequest("Container not found!" + container + appId + name);
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Container com o nome "+ container +" nao existe");
+                        return response;
                     }
 
                     // Atualizar o nome do container desejado
@@ -431,11 +485,13 @@ namespace SOMIOD.Controllers
 
                     if (rowsAffected <= 0)
                     {
-                        return BadRequest("Nao foi possivel efetuar o update");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao foi possivel efetuar o update");
+                        return response;
                     }
 
                     Console.WriteLine("UPDATE SUCCESSFULL!!!!");
-                    return Ok();
+                    response = Request.CreateResponse(HttpStatusCode.OK);
+                    return response;
 
                 }
             }
@@ -444,13 +500,13 @@ namespace SOMIOD.Controllers
                 // Handle the unique constraint violation
                 if (ex.Number == 2601 || ex.Number == 2627)
                 {
-                    Console.WriteLine("Name already exists. Choose a unique name.");
-                    return BadRequest("Nome deve ser unico");
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "O nome do container ja existe");
+                    return response;
                 }
                 else
                 {
-                    Console.WriteLine("Insertion failed: " + ex.Message);
-                    return BadRequest("Erro no update da DB");
+                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a dar update na BD");
+                    return response;
                 }
             }
         }
