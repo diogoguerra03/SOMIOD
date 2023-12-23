@@ -56,14 +56,8 @@ namespace SOMIOD.Controllers
             {
                 XmlElement application = doc.CreateElement("application");
                 XmlElement name = doc.CreateElement("name");
-                XmlElement id = doc.CreateElement("id");
-                XmlElement creationDate = doc.CreateElement("creation_dt");
-                id.InnerText = app.Id.ToString();
                 name.InnerText = app.Name;
-                creationDate.InnerText = app.creation_dt.ToString();
-                application.AppendChild(id);
                 application.AppendChild(name);
-                application.AppendChild(creationDate);
                 root.AppendChild(application);
             }
 
@@ -225,7 +219,7 @@ namespace SOMIOD.Controllers
                 return null;
             }
 
-            List<Container> containers = new List<Container>();
+            List<string> containersName = new List<string>();
             var headers = HttpContext.Current.Request.Headers;
             string somiodDiscoverHeaderValue = headers.Get("somiod-discover");
 
@@ -244,14 +238,14 @@ namespace SOMIOD.Controllers
                         container.Name = reader.GetString(1);
                         container.creation_dt = reader.GetDateTime(2);
                         container.ApplicationId = reader.GetInt32(3);
-                        containers.Add(container);
+                        containersName.Add(container.Name);
                     }
                 }
-                return containers;
+                return containersName;
             }
-            List<Application> applications = new List<Application>();
-            applications.Add(applicationObject);
-            return applications;
+            List<string> applicationsName = new List<string>();
+            applicationsName.Add(applicationObject.Name);
+            return applicationsName;
         }
 
         [HttpPost]

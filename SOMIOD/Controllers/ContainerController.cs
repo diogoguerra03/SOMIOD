@@ -329,7 +329,7 @@ namespace SOMIOD.Controllers
 
             if (somiodDiscoverHeaderValue == "data")
             {
-                List<Data> datas = new List<Data>();
+                List<string> datasNames = new List<string>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -344,14 +344,14 @@ namespace SOMIOD.Controllers
                         data.Content = reader.GetString(2);
                         data.creation_dt = reader.GetDateTime(3);
                         data.ContainerId = reader.GetInt32(4);
-                        datas.Add(data);
+                        datasNames.Add(data.Name);
                     }
                 }
-                return datas;
+                return datasNames;
             }
             if (somiodDiscoverHeaderValue == "sub")
             {
-                List<Subscription> subs = new List<Subscription>();
+                List<string> subsNames = new List<string>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -368,17 +368,17 @@ namespace SOMIOD.Controllers
                         subscription.Event = reader.GetString(4);
                         subscription.Endpoint = reader.GetString(5);
 
-                        subs.Add(subscription);
+                        subsNames.Add(subscription.Name);
                     }
                 }
-                return subs;
+                return subsNames;
             }
 
             if (container != null)
             {
-                List<Container> containers = new List<Container>();
-                containers.Add(containerObject);
-                return containers;
+                List<string> containersNames = new List<string>();
+                containersNames.Add(containerObject.Name);
+                return containersNames;
             }
             return null;
 
