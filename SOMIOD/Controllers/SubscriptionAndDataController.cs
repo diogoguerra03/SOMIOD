@@ -319,7 +319,7 @@ namespace SOMIOD.Controllers
             {
                 return NotFound();
             }
-            return Ok(dataObject.Name);
+            return Ok(dataObject);
         }
 
 
@@ -379,7 +379,7 @@ namespace SOMIOD.Controllers
                     subObject.Name = reader.GetString(1);
                     subObject.creation_dt = reader.GetDateTime(2);
                     subObject.ContainerId = reader.GetInt32(3);
-                    subObject.Event = reader.GetString(4);
+                    subObject.Event = reader.GetInt32(4);
                     subObject.Endpoint = reader.GetString(5);
                     count++;
                 }
@@ -389,7 +389,7 @@ namespace SOMIOD.Controllers
             {
                 return NotFound();
             }
-            return Ok(subObject.Name);
+            return Ok(subObject);
         }
     }
 }

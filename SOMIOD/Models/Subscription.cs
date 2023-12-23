@@ -11,7 +11,7 @@ namespace SOMIOD.Models
         public string Name { get; set; }
         public DateTime creation_dt { get; set; }
         public int ContainerId { get; set; }
-        public string Event { get; set; }
+        public int Event { get; set; }
         public string Endpoint { get; set; }
     }
 }

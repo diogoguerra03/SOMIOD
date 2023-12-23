@@ -243,9 +243,9 @@ namespace SOMIOD.Controllers
                 }
                 return containersName;
             }
-            List<string> applicationsName = new List<string>();
-            applicationsName.Add(applicationObject.Name);
-            return applicationsName;
+            List<Application> applications = new List<Application>();
+            applications.Add(applicationObject);
+            return applications;
         }
 
         [HttpPost]

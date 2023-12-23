@@ -351,7 +351,7 @@ namespace SOMIOD.Controllers
                 }
                 return datasNames;
             }
-            if (somiodDiscoverHeaderValue == "sub")
+            if (somiodDiscoverHeaderValue == "subscription")
             {
                 List<string> subsNames = new List<string>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -367,7 +367,7 @@ namespace SOMIOD.Controllers
                         subscription.Name = reader.GetString(1);
                         subscription.creation_dt = reader.GetDateTime(2);
                         subscription.ContainerId = reader.GetInt32(3);
-                        subscription.Event = reader.GetString(4);
+                        subscription.Event = reader.GetInt32(4);
                         subscription.Endpoint = reader.GetString(5);
 
                         subsNames.Add(subscription.Name);
@@ -378,9 +378,9 @@ namespace SOMIOD.Controllers
 
             if (container != null)
             {
-                List<string> containersNames = new List<string>();
-                containersNames.Add(containerObject.Name);
-                return containersNames;
+                List<Container> containers = new List<Container>();
+                containers.Add(containerObject);
+                return containers;
             }
             return null;
 
