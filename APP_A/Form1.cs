@@ -236,6 +236,9 @@ namespace APP_A
             XmlElement endpoint = doc.CreateElement("endpoint");
             endpoint.InnerText = "mqtt://127.0.0.1";
             subscription.AppendChild(endpoint);
+            XmlElement subEvent = doc.CreateElement("event");
+            subEvent.InnerText = "1";
+            subscription.AppendChild(subEvent);
             root.AppendChild(subscription);
 
             string xmlContent = doc.OuterXml;

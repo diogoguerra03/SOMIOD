@@ -9,6 +9,7 @@ using System.Net.Http;
 using System.Text;
 using System.Web;
 using System.Web.Http;
+using System.Web.UI.WebControls;
 using System.Xml;
 using uPLibrary.Networking.M2Mqtt;
 
@@ -154,6 +155,9 @@ namespace SOMIOD.Controllers
 
             int appId = 0;
             int containerId = 0;
+            MqttClient mcClient = null;
+            string[] mStrTopicsInfo = { container };
+            string endpoint = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 try
@@ -184,7 +188,30 @@ namespace SOMIOD.Controllers
                         reader.Close();
                         if (rowCount > 0)
                         {
-
+                            rowCount = 0;
+                            command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND event = 2", connection);
+                            command.Parameters.AddWithValue("@conId", containerId);
+                            reader = command.ExecuteReader();
+                            while (reader.Read())
+                            {
+                                endpoint = reader.GetString(0);
+                                if (endpoint.Substring(0, 4) == "mqtt")
+                                {
+                                    mcClient = new MqttClient(IPAddress.Parse(endpoint.Substring(7)));
+                                    mcClient.Connect(Guid.NewGuid().ToString());
+                                    if (!mcClient.IsConnected)
+                                    {
+                                        Console.WriteLine("Error connecting to message broker...");
+                                    }
+                                    mcClient.Publish(container, Encoding.UTF8.GetBytes("Data eliminada...")); //TODO Mudar esta mensagem
+                                }
+                                else if (endpoint.Substring(0, 4) == "http")
+                                {
+                                    //Fazer pedido HTTP
+                                }
+                                rowCount++;
+                            }
+                            reader.Close();
                             command = new SqlCommand("DELETE FROM Data WHERE name = @name AND container_id = @conId", connection);
                             command.Parameters.AddWithValue("@name", name);
                             command.Parameters.AddWithValue("@conId", containerId);

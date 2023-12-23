@@ -159,6 +159,8 @@ namespace SOMIOD.Controllers
                     string name = subscriptionName.InnerText;
                     XmlNode subscriptionEndpoint = doc.SelectSingleNode("//subscription/endpoint");
                     string endpoint = subscriptionEndpoint.InnerText;
+                    XmlNode subscriptionEvent = doc.SelectSingleNode("//subscription/event");
+                    string subEvent = subscriptionEvent.InnerText;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         try
@@ -168,7 +170,7 @@ namespace SOMIOD.Controllers
                             command.Parameters.AddWithValue("@date", DateTime.Now);
                             command.Parameters.AddWithValue("@name", name);
                             command.Parameters.AddWithValue("@conId", containerId);
-                            command.Parameters.AddWithValue("@event", "1");
+                            command.Parameters.AddWithValue("@event", subEvent);
                             command.Parameters.AddWithValue("@endpoint", endpoint);
 
                             int rowsAffected = command.ExecuteNonQuery();
@@ -213,7 +215,7 @@ namespace SOMIOD.Controllers
                     {
                         int rowCount = 0;
                         connection.Open();
-                        SqlCommand command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId", connection);
+                        SqlCommand command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND event = 1", connection);
                         command.Parameters.AddWithValue("@conId", containerId);
                         SqlDataReader reader = command.ExecuteReader();
                         while (reader.Read())
@@ -263,7 +265,7 @@ namespace SOMIOD.Controllers
                                 }
                             } 
                         }
-                        response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a inserir no DB");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existen subscriçoes para se enviar a data");
                         return response;
                     }
 
