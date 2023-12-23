@@ -292,7 +292,7 @@ namespace SOMIOD.Controllers
             {
                 return NotFound();
             }
-            return Ok(dataObject);
+            return Ok(dataObject.Name);
         }
 
 
@@ -362,7 +362,7 @@ namespace SOMIOD.Controllers
             {
                 return NotFound();
             }
-            return Ok(subObject);
+            return Ok(subObject.Name);
         }
     }
 }
