@@ -234,6 +234,26 @@ namespace SOMIOD.Controllers
                             else if (endpoint.Substring(0, 4) == "http")
                             {
                                 //Fazer pedido HTTP
+                                HttpWebRequest requestHTTP = (HttpWebRequest)WebRequest.Create(endpoint);
+                                requestHTTP.Method = "POST";
+                                requestHTTP.ContentType = "application/xml";
+                                requestHTTP.ContentLength = docBytes.Length;
+
+                                Stream dataStream = requestHTTP.GetRequestStream();
+                                dataStream.Write(docBytes, 0, docBytes.Length);
+                                dataStream.Close();
+
+                                HttpWebResponse responseHttp = (HttpWebResponse)requestHTTP.GetResponse();
+                                Console.WriteLine(responseHttp.StatusDescription);
+                                dataStream = responseHttp.GetResponseStream();
+                                StreamReader readerHttp = new StreamReader(dataStream);
+
+                                string responseFromServer = readerHttp.ReadToEnd();
+                                Console.WriteLine(responseFromServer);
+                                readerHttp.Close();
+                                dataStream.Close();
+                                responseHttp.Close();
+
                             }
                             rowCount++;
                         }
