@@ -304,7 +304,14 @@ namespace APP_A
 
         private void deleteApp_Click(object sender, EventArgs e)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
+            if (listBoxApps.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione uma aplicação");
+                return;
+            }
+
+            String app = listBoxApps.SelectedItem.ToString();
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + app);
 
             request.Method = "DELETE";
             request.ContentType = "application/xml";
@@ -322,6 +329,7 @@ namespace APP_A
                     else
                     {
                         MessageBox.Show("Eliminado com sucesso");
+                        loadListBoxApps();
                     }
                 }
             }
@@ -477,6 +485,14 @@ namespace APP_A
 
         private void buttonUpdateAppName_Click(object sender, EventArgs e)
         {
+            if (listBoxApps.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione uma aplicação");
+                return;
+            }
+
+            String app = listBoxApps.SelectedItem.ToString();
+
             XmlDocument doc = new XmlDocument();
             XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
             doc.AppendChild(dec);
@@ -491,7 +507,7 @@ namespace APP_A
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + app);
 
             request.Method = "PUT";
             request.ContentType = "application/xml";
@@ -515,7 +531,7 @@ namespace APP_A
                     }
 
                     MessageBox.Show("Nome atualizado com sucesso com sucesso");
-
+                    loadListBoxApps();
                 }
             }
             catch (WebException ex)
