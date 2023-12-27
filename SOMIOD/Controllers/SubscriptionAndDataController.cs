@@ -316,7 +316,7 @@ namespace SOMIOD.Controllers
                 {
                     dataObject.Id = reader.GetInt32(0);
                     dataObject.Name = reader.GetString(1);
-                    dataObject.Content = reader.GetString(2);
+                    dataObject.Content = Encoding.UTF8.GetString(reader.GetSqlBinary(2).Value);
                     dataObject.creation_dt = reader.GetDateTime(3);
                     dataObject.ContainerId = reader.GetInt32(4);
                     count++;
