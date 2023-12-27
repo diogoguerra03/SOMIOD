@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Data.SqlTypes;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -235,24 +236,15 @@ namespace SOMIOD.Controllers
                             {
                                 //Fazer pedido HTTP
                                 HttpWebRequest requestHTTP = (HttpWebRequest)WebRequest.Create(endpoint);
+                                byte[] contentBytes = Encoding.UTF8.GetBytes(content);
                                 requestHTTP.Method = "POST";
                                 requestHTTP.ContentType = "application/xml";
-                                requestHTTP.ContentLength = docBytes.Length;
+                                requestHTTP.ContentLength = contentBytes.Length;
 
-                                Stream dataStream = requestHTTP.GetRequestStream();
-                                dataStream.Write(docBytes, 0, docBytes.Length);
-                                dataStream.Close();
-
-                                HttpWebResponse responseHttp = (HttpWebResponse)requestHTTP.GetResponse();
-                                Console.WriteLine(responseHttp.StatusDescription);
-                                dataStream = responseHttp.GetResponseStream();
-                                StreamReader readerHttp = new StreamReader(dataStream);
-
-                                string responseFromServer = readerHttp.ReadToEnd();
-                                Console.WriteLine(responseFromServer);
-                                readerHttp.Close();
-                                dataStream.Close();
-                                responseHttp.Close();
+                                using (Stream requestStream = requestHTTP.GetRequestStream())
+                                {
+                                    requestStream.Write(contentBytes, 0, contentBytes.Length);
+                                }
 
                             }
                             rowCount++;
