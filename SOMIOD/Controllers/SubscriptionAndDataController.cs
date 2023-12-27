@@ -23,8 +23,9 @@ namespace SOMIOD.Controllers
 
         [Route("{application}/{container}/sub/{name}")]
         [HttpDelete]
-        public IHttpActionResult DeleteSubscription(string application, string container, string name)
+        public HttpResponseMessage DeleteSubscription(string application, string container, string name)
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -37,14 +38,15 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
-                // Handle the case where no XML data is provided
-                return BadRequest("No XML data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No XML data provided");
+                return response;
             }
 
             XmlDocument doc = new XmlDocument();
@@ -91,35 +93,32 @@ namespace SOMIOD.Controllers
 
                             if (rowsAffected > 0)
                             {
-                                return Ok();
+                                response = Request.CreateResponse(HttpStatusCode.OK);
+                                return response;
                             }
                             else
                             {
-                                return InternalServerError();
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a dar delete da BD");
+                                return response;
                             }
                         }
                         else
                         {
-                            return BadRequest("Nao existe aplicação com esse nome");
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe um container com esse nome");
+                            return response;
                         }
                     }
                     else
                     {
-                        return BadRequest("Nao existe container com esse nome");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe uma aplicaçao com esse nome");
+                        return response;
                     }
 
                 }
                 catch (SqlException ex)
                 {
-                    // Handle the unique constraint violation
-                    if (ex.Number == 2601 || ex.Number == 2627)
-                    {
-                        return BadRequest("Nome deve ser unico");
-                    }
-                    else
-                    {
-                        return BadRequest("Erro no insert da DB");
-                    }
+                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a dar delete da BD");
+                    return response;
                 }
 
             }
@@ -127,8 +126,9 @@ namespace SOMIOD.Controllers
 
         [Route("{application}/{container}/data/{name}")]
         [HttpDelete]
-        public IHttpActionResult DeleteData(string application, string container, string name)
+        public HttpResponseMessage DeleteData(string application, string container, string name)
         {
+            HttpResponseMessage response;
             byte[] docBytes;
             using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
             {
@@ -141,14 +141,15 @@ namespace SOMIOD.Controllers
 
             if (docBytes == null || docBytes.Length == 0)
             {
-                return BadRequest("No data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                return response;
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
             if (xmlContent == null)
             {
-                // Handle the case where no XML data is provided
-                return BadRequest("No XML data provided");
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No XML data provided");
+                return response;
             }
 
             XmlDocument doc = new XmlDocument();
@@ -230,35 +231,32 @@ namespace SOMIOD.Controllers
                                     rowCount++;
                                 }
                                 reader.Close();
-                                return Ok();
+                                response = Request.CreateResponse(HttpStatusCode.OK);
+                                return response;
                             }
                             else
                             {
-                                return InternalServerError();
+                                response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a dar delete da BD");
+                                return response;
                             }
                         }
                         else
                         {
-                            return BadRequest("Nao existe aplicação com esse nome");
+                            response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe um container com esse nome");
+                            return response;
                         }
                     }
                     else
                     {
-                        return BadRequest("Nao existe container com esse nome");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe uma aplicacao com esse nome");
+                        return response;
                     }
 
                 }
                 catch (SqlException ex)
                 {
-                    // Handle the unique constraint violation
-                    if (ex.Number == 2601 || ex.Number == 2627)
-                    {
-                        return BadRequest("Nome deve ser unico");
-                    }
-                    else
-                    {
-                        return BadRequest("Erro no insert da DB");
-                    }
+                    response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a dar delete da BD");
+                    return response;
                 }
 
             }
