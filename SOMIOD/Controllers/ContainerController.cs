@@ -100,14 +100,19 @@ namespace SOMIOD.Controllers
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
-            if (xmlContent == null)
-            {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
-                return response;
-            }
 
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(xmlContent);
+            try
+            {
+                doc.LoadXml(xmlContent);
+            }
+            catch (Exception)
+            {
+
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
+                return response;
+            }    
+            
 
             try
             {
@@ -211,7 +216,7 @@ namespace SOMIOD.Controllers
                     XmlNode dataName = doc.SelectSingleNode("//data/name");
                     string name = dataName.InnerText;
                     XmlNode dataContent = doc.SelectSingleNode("//data/content");
-                    string content = dataContent.InnerText;
+                    string content = dataContent.InnerXml;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         int rowCount = 0;
@@ -257,7 +262,7 @@ namespace SOMIOD.Controllers
                                 command = new SqlCommand("INSERT INTO Data (name, content, creation_dt, container_id) VALUES (@name,@content, @date, @conId)", connection);
                                 command.Parameters.AddWithValue("@date", DateTime.Now);
                                 command.Parameters.AddWithValue("@name", name);
-                                command.Parameters.AddWithValue("@content", content); //Mudar depois
+                                command.Parameters.AddWithValue("@content", Encoding.UTF8.GetBytes(content)); //Mudar depois
                                 command.Parameters.AddWithValue("@conId", containerId);
                                 command.ExecuteNonQuery();
                                 response = Request.CreateResponse(HttpStatusCode.OK);
