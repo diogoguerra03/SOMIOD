@@ -362,9 +362,9 @@ namespace SOMIOD.Controllers
 
         [HttpGet]
         [Route("{application}/{container}/sub/{subscription}")]
-        public IHttpActionResult GetSubscription(string application, string container, string subscription)
+        public HttpResponseMessage GetSubscription(string application, string container, string subscription)
         {
-
+            HttpResponseMessage response;
             int appId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -381,7 +381,8 @@ namespace SOMIOD.Controllers
 
             if (appId == -1)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Aplicacao nao existe");
+                return response;
             }
             int containerId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -399,7 +400,8 @@ namespace SOMIOD.Controllers
             }
             if (containerId == -1)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Container nao existe");
+                return response;
             }
             Subscription subObject = new Subscription();
             int count = 0;
@@ -424,9 +426,39 @@ namespace SOMIOD.Controllers
             }
             if (count == 0)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Subscricao com o nome "+ subscription +" nao existe");
+                return response;
             }
-            return Ok(subObject);
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("response");
+            doc.AppendChild(root);
+            XmlElement subElement = doc.CreateElement("subscription");
+            XmlElement idElement = doc.CreateElement("id");
+            idElement.InnerText = subObject.Id.ToString();
+            subElement.AppendChild(idElement);
+            XmlElement nameElement = doc.CreateElement("name");
+            nameElement.InnerText = subObject.Name;
+            subElement.AppendChild(nameElement);;
+            XmlElement creationElement = doc.CreateElement("creation_dt");
+            creationElement.InnerText = subObject.creation_dt.ToString();
+            subElement.AppendChild(creationElement);
+            XmlElement containerIdElement = doc.CreateElement("container_id");
+            containerIdElement.InnerText = subObject.ContainerId.ToString();
+            subElement.AppendChild(containerIdElement);
+            XmlElement eventElement = doc.CreateElement("event");
+            eventElement.InnerText = subObject.Event.ToString();
+            subElement.AppendChild(eventElement);
+            XmlElement endpointElement = doc.CreateElement("endpoint");
+            endpointElement.InnerText = subObject.Endpoint;
+            subElement.AppendChild(endpointElement);
+            root.AppendChild(subElement);
+
+            string xmlContent = doc.OuterXml;
+            response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            return response;
         }
     }
 }
