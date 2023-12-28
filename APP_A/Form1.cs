@@ -244,43 +244,6 @@ namespace APP_A
             }
         }
 
-        private void deleteApp_Click(object sender, EventArgs e)
-        {
-
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Ligh");
-
-            request.Method = "DELETE";
-            request.ContentType = "application/xml";
-
-            try
-            {
-                // Get the response from the server
-                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
-                {
-                    // Check if the request was successful
-                    if (response.StatusCode != HttpStatusCode.OK)
-                    {
-                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
-                    }
-                    else
-                    {
-                        MessageBox.Show("Eliminado com sucesso");
-                    }
-                }
-            }
-            catch (WebException ex)
-            {
-                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
-                {
-                    string responseContent = reader.ReadToEnd();
-                    XmlDocument docResponse = new XmlDocument();
-                    docResponse.LoadXml(responseContent);
-
-                    MessageBox.Show(docResponse.InnerText);
-                }
-            }
-        }
-
         private void deleteContainer_Click(object sender, EventArgs e)
         {
 
