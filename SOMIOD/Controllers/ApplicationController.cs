@@ -63,7 +63,7 @@ namespace SOMIOD.Controllers
 
             string xmlContent = doc.OuterXml;
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml"   );
             return response;
         }
 

@@ -355,7 +355,7 @@ namespace SOMIOD.Controllers
             
             string xmlContent = doc.OuterXml;
             response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
             return response;
         }
 
@@ -457,7 +457,7 @@ namespace SOMIOD.Controllers
 
             string xmlContent = doc.OuterXml;
             response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
             return response;
         }
     }
