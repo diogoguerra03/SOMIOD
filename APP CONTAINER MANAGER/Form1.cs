@@ -16,6 +16,7 @@ namespace APP_CONTAINER_MANAGER
     public partial class Form1 : Form
     {
         string baseURI = @"http://localhost:59454/api/somiod";
+        string application;
         public Form1()
         {
             InitializeComponent();
@@ -23,12 +24,18 @@ namespace APP_CONTAINER_MANAGER
 
         private void getContainerButton_Click(object sender, EventArgs e)
         {
+            if (appTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da aplicação");
+                return;
+            }
+            application = appTextBox.Text;
             loadContainerListBox();
         }
 
         private void createContainerButton_Click(object sender, EventArgs e)
         {
-            if (appTextBox.Text.Length == 0)
+            if (application.Length == 0)
             {
                MessageBox.Show("Insira o nome da aplicação");
                 return;
@@ -52,7 +59,7 @@ namespace APP_CONTAINER_MANAGER
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + appTextBox.Text);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application);
 
             request.Method = "POST";
             request.ContentType = "application/xml";
@@ -98,13 +105,8 @@ namespace APP_CONTAINER_MANAGER
         public void loadContainerListBox()
         {
             containersListBox.Items.Clear();
-            if (appTextBox.Text.Length == 0)
-            {
-                MessageBox.Show("Insira o nome da aplicação");
-                return;
-            }
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + appTextBox.Text);
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application);
             request.Method = "GET";
             request.ContentType = "application/xml";
             request.Headers.Add("somiod-discover", "container");
@@ -159,6 +161,51 @@ namespace APP_CONTAINER_MANAGER
 
                     MessageBox.Show(docResponse.InnerText);
 
+                }
+            }
+        }
+
+        private void deleteContainerButton_Click(object sender, EventArgs e)
+        {
+            if(containersListBox.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione um container");
+                return;
+            }
+
+            string container = containersListBox.SelectedItem.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container);
+
+            request.Method = "DELETE";
+            request.ContentType = "application/xml";
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Eliminado com sucesso");
+                        loadContainerListBox();
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
                 }
             }
         }

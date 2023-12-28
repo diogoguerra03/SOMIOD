@@ -98,6 +98,7 @@
             this.deleteContainerButton.TabIndex = 5;
             this.deleteContainerButton.Text = "DELETE CONTAINER";
             this.deleteContainerButton.UseVisualStyleBackColor = true;
+            this.deleteContainerButton.Click += new System.EventHandler(this.deleteContainerButton_Click);
             // 
             // label3
             // 
@@ -117,9 +118,9 @@
             // 
             // createContainerButton
             // 
-            this.createContainerButton.Location = new System.Drawing.Point(202, 29);
+            this.createContainerButton.Location = new System.Drawing.Point(202, 18);
             this.createContainerButton.Name = "createContainerButton";
-            this.createContainerButton.Size = new System.Drawing.Size(150, 23);
+            this.createContainerButton.Size = new System.Drawing.Size(165, 44);
             this.createContainerButton.TabIndex = 8;
             this.createContainerButton.Text = "Create Container";
             this.createContainerButton.UseVisualStyleBackColor = true;
@@ -167,9 +168,9 @@
             // 
             // updateContainer
             // 
-            this.updateContainer.Location = new System.Drawing.Point(203, 34);
+            this.updateContainer.Location = new System.Drawing.Point(203, 29);
             this.updateContainer.Name = "updateContainer";
-            this.updateContainer.Size = new System.Drawing.Size(165, 23);
+            this.updateContainer.Size = new System.Drawing.Size(165, 34);
             this.updateContainer.TabIndex = 10;
             this.updateContainer.Text = "Update Container";
             this.updateContainer.UseVisualStyleBackColor = true;
