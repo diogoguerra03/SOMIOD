@@ -23,12 +23,88 @@ namespace APP_CONTAINER_MANAGER
 
         private void getContainerButton_Click(object sender, EventArgs e)
         {
-            if(appTextBox.Text.Length == 0)
+            loadContainerListBox();
+        }
+
+        private void createContainerButton_Click(object sender, EventArgs e)
+        {
+            if (appTextBox.Text.Length == 0)
             {
-                MessageBox.Show("Insira o nome da aplicação");
+               MessageBox.Show("Insira o nome da aplicação");
+                return;
+            }
+            if(containerNameTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o nome do container");
+                return;
+            }
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "container");
+            doc.AppendChild(root);
+            XmlElement container = doc.CreateElement("container");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = containerNameTextBox.Text;
+            container.AppendChild(name);
+            root.AppendChild(container);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + appTextBox.Text);
+
+            request.Method = "POST";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
             }
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI+"/"+appTextBox.Text);
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Criado com sucesso");
+                        loadContainerListBox();
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+            }
+        }
+        
+        public void loadContainerListBox()
+        {
+            containersListBox.Items.Clear();
+            if (appTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da aplicação");
+                return;
+            }
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + appTextBox.Text);
             request.Method = "GET";
             request.ContentType = "application/xml";
             request.Headers.Add("somiod-discover", "container");

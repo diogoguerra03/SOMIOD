@@ -123,6 +123,7 @@
             this.createContainerButton.TabIndex = 8;
             this.createContainerButton.Text = "Create Container";
             this.createContainerButton.UseVisualStyleBackColor = true;
+            this.createContainerButton.Click += new System.EventHandler(this.createContainerButton_Click);
             // 
             // groupBox1
             // 
