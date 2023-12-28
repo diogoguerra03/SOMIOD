@@ -194,9 +194,9 @@ namespace SOMIOD.Controllers
 
         [HttpGet]
         [Route("{application}")]
-        public IEnumerable<Object> GetApplication(string application)
+        public HttpResponseMessage GetApplication(string application)
         {
-
+            HttpResponseMessage response;
             Application applicationObject = null;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -204,22 +204,25 @@ namespace SOMIOD.Controllers
                 SqlCommand command = new SqlCommand("SELECT * FROM Application WHERE name = @name", connection);
                 command.Parameters.AddWithValue("@name", application);
                 SqlDataReader reader = command.ExecuteReader();
+                int rowCount = 0;
                 while (reader.Read())
                 {
                     applicationObject = new Application();
                     applicationObject.Id = reader.GetInt32(0);
                     applicationObject.Name = reader.GetString(1);
                     applicationObject.creation_dt = reader.GetDateTime(2);
+                    rowCount++;
                 }
                 reader.Close();
+                if(rowCount == 0)
+                {
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nao existe nenhuma aplicação com o nome "+ application);
+                    return response;
+                }
             }
+            
 
-            if (application == null)
-            {
-                return null;
-            }
-
-            List<string> containersName = new List<string>();
+            List<Container> containers= new List<Container>();
             var headers = HttpContext.Current.Request.Headers;
             string somiodDiscoverHeaderValue = headers.Get("somiod-discover");
 
@@ -238,14 +241,48 @@ namespace SOMIOD.Controllers
                         container.Name = reader.GetString(1);
                         container.creation_dt = reader.GetDateTime(2);
                         container.ApplicationId = reader.GetInt32(3);
-                        containersName.Add(container.Name);
+                        containers.Add(container);
                     }
                 }
-                return containersName;
+                XmlDocument docContainers = new XmlDocument();
+                XmlDeclaration decContainers = docContainers.CreateXmlDeclaration("1.0", null, null);
+                docContainers.AppendChild(decContainers);
+                XmlElement rootCointainers = docContainers.CreateElement("response");
+                docContainers.AppendChild(rootCointainers);
+                foreach (Container container in containers)
+                {
+                    XmlElement containerElement = docContainers.CreateElement("container");
+                    XmlElement name = docContainers.CreateElement("name");
+                    name.InnerText = container.Name;
+                    containerElement.AppendChild(name);
+                    rootCointainers.AppendChild(containerElement);
+                }
+                string xmlContentContainer = docContainers.OuterXml;
+                response = Request.CreateResponse(HttpStatusCode.OK);
+                response.Content = new StringContent(xmlContentContainer, Encoding.UTF8, "application/xml");
+                return response;
             }
-            List<Application> applications = new List<Application>();
-            applications.Add(applicationObject);
-            return applications;
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("response");
+            doc.AppendChild(root);
+            XmlElement appElement = doc.CreateElement("application");
+            XmlElement idElement = doc.CreateElement("id");
+            idElement.InnerText = applicationObject.Id.ToString();
+            appElement.AppendChild(idElement);
+            XmlElement nameElement = doc.CreateElement("name");
+            nameElement.InnerText = applicationObject.Name;
+            appElement.AppendChild(nameElement); ;
+            XmlElement creationElement = doc.CreateElement("creation_dt");
+            creationElement.InnerText = applicationObject.creation_dt.ToString();
+            appElement.AppendChild(creationElement);
+            root.AppendChild(appElement);
+
+            string xmlContent = doc.OuterXml;
+            response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
+            return response;
         }
 
         [HttpPost]
