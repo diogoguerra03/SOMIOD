@@ -311,14 +311,18 @@ namespace SOMIOD.Controllers
             }
 
             string xmlContent = Encoding.UTF8.GetString(docBytes);
-            if (xmlContent == null)
-            {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a criar o XML");
-                return response;
-            }
 
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(xmlContent);
+            try
+            {
+                doc.LoadXml(xmlContent);
+            }
+            catch (Exception)
+            {
+
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
+                return response;
+            }
 
             try
             {

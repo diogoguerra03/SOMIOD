@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOMIOD", "SOMIOD\SOMIOD.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "APP_MANAGER", "APP_MANAGER\APP_MANAGER.csproj", "{48A326E3-88C5-41E4-AC77-4F47F2556739}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CONTAINER_MANAGER", "APP CONTAINER MANAGER\CONTAINER_MANAGER.csproj", "{A973A878-AE68-4F54-82E0-0E7E55A33390}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{48A326E3-88C5-41E4-AC77-4F47F2556739}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{48A326E3-88C5-41E4-AC77-4F47F2556739}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{48A326E3-88C5-41E4-AC77-4F47F2556739}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A973A878-AE68-4F54-82E0-0E7E55A33390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A973A878-AE68-4F54-82E0-0E7E55A33390}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A973A878-AE68-4F54-82E0-0E7E55A33390}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A973A878-AE68-4F54-82E0-0E7E55A33390}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
