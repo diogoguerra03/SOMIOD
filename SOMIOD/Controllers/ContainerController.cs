@@ -303,9 +303,9 @@ namespace SOMIOD.Controllers
 
         [HttpGet]
         [Route("{application}/{container}")]
-        public IEnumerable<Object> GetContainer(string application, string container)
+        public HttpResponseMessage GetContainer(string application, string container)
         {
-
+            HttpResponseMessage response;
             Container containerObject = null;
             int appId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -348,7 +348,7 @@ namespace SOMIOD.Controllers
 
             if (somiodDiscoverHeaderValue == "data")
             {
-                List<string> datasNames = new List<string>();
+                List<Data> datas = new List<Data>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -360,17 +360,34 @@ namespace SOMIOD.Controllers
                         Data data = new Data();
                         data.Id = reader.GetInt32(0);
                         data.Name = reader.GetString(1);
-                        data.Content = reader.GetString(2);
+                        data.Content = Encoding.UTF8.GetString(reader.GetSqlBinary(2).Value); ;
                         data.creation_dt = reader.GetDateTime(3);
                         data.ContainerId = reader.GetInt32(4);
-                        datasNames.Add(data.Name);
+                        datas.Add(data);
                     }
+                    XmlDocument docData = new XmlDocument();
+                    XmlDeclaration decData = docData.CreateXmlDeclaration("1.0", null, null);
+                    docData.AppendChild(decData);
+                    XmlElement root = docData.CreateElement("response");
+                    docData.AppendChild(root);
+                    foreach (Data data in datas)
+                    {
+                        XmlElement dataElement = docData.CreateElement("data");
+                        XmlElement name = docData.CreateElement("name");
+                        name.InnerText = data.Name;
+                        dataElement.AppendChild(name);
+                        root.AppendChild(dataElement);
+                    }
+
+                    string xmlContentData = docData.OuterXml;
+                    response = Request.CreateResponse(HttpStatusCode.OK);
+                    response.Content = new StringContent(xmlContentData, Encoding.UTF8, "application/xml");
+                    return response;
                 }
-                return datasNames;
             }
             if (somiodDiscoverHeaderValue == "subscription")
             {
-                List<string> subsNames = new List<string>();
+                List<Subscription> subs = new List<Subscription>();
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
@@ -387,19 +404,53 @@ namespace SOMIOD.Controllers
                         subscription.Event = reader.GetInt32(4);
                         subscription.Endpoint = reader.GetString(5);
 
-                        subsNames.Add(subscription.Name);
+                        subs.Add(subscription);
                     }
                 }
-                return subsNames;
+                XmlDocument docSub = new XmlDocument();
+                XmlDeclaration decSub = docSub.CreateXmlDeclaration("1.0", null, null);
+                docSub.AppendChild(decSub);
+                XmlElement root = docSub.CreateElement("response");
+                docSub.AppendChild(root);
+                foreach (Subscription sub in subs)
+                {
+                    XmlElement dataElement = docSub.CreateElement("data");
+                    XmlElement name = docSub.CreateElement("name");
+                    name.InnerText = sub.Name;
+                    dataElement.AppendChild(name);
+                    root.AppendChild(dataElement);
+                }
+
+                string xmlContentSub = docSub.OuterXml;
+                response = Request.CreateResponse(HttpStatusCode.OK);
+                response.Content = new StringContent(xmlContentSub, Encoding.UTF8, "application/xml");
+                return response;
             }
 
-            if (container != null)
-            {
-                List<Container> containers = new List<Container>();
-                containers.Add(containerObject);
-                return containers;
-            }
-            return null;
+            XmlDocument docContainer = new XmlDocument();
+            XmlDeclaration decContainer = docContainer.CreateXmlDeclaration("1.0", null, null);
+            docContainer.AppendChild(decContainer);
+            XmlElement rootContainer = docContainer.CreateElement("response");
+            docContainer.AppendChild(rootContainer);
+            XmlElement containerElement = docContainer.CreateElement("container");
+            XmlElement idElement = docContainer.CreateElement("id");
+            idElement.InnerText = containerObject.Id.ToString();
+            containerElement.AppendChild(idElement);
+            XmlElement nameElement = docContainer.CreateElement("name");
+            nameElement.InnerText = containerObject.Name;
+            containerElement.AppendChild(nameElement); ;
+            XmlElement creationElement = docContainer.CreateElement("creation_dt");
+            creationElement.InnerText = containerObject.creation_dt.ToString();
+            containerElement.AppendChild(creationElement);
+            XmlElement appIdElement = docContainer.CreateElement("application_id");
+            appIdElement.InnerText = containerObject.ApplicationId.ToString();
+            containerElement.AppendChild(appIdElement);
+            rootContainer.AppendChild(containerElement);
+
+            string xmlContent = docContainer.OuterXml;
+            response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
+            return response;
 
         }
 
