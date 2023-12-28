@@ -204,6 +204,68 @@ namespace APP_CONTAINER_MANAGER
                     string responseContent = reader.ReadToEnd();
                     XmlDocument docResponse = new XmlDocument();
                     docResponse.LoadXml(responseContent);
+                    MessageBox.Show(docResponse.InnerText);
+                }
+            }
+        }
+
+        private void updateContainer_Click(object sender, EventArgs e)
+        {
+            if (containersListBox.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione um container");
+                return;
+            }
+            string container = containersListBox.SelectedItem.ToString();
+
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "container");
+            doc.AppendChild(root);
+            XmlElement containerElement = doc.CreateElement("container");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = updateContainerTextBox.Text;
+            containerElement.AppendChild(name);
+            root.AppendChild(containerElement);
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container);
+
+            request.Method = "PUT";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server 
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+
+                    MessageBox.Show("Nome atualizado com sucesso");
+                    loadContainerListBox();
+
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
 
                     MessageBox.Show(docResponse.InnerText);
                 }

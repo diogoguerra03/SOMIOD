@@ -92,12 +92,14 @@
             // 
             // deleteContainerButton
             // 
+            this.deleteContainerButton.BackColor = System.Drawing.Color.Red;
+            this.deleteContainerButton.ForeColor = System.Drawing.Color.White;
             this.deleteContainerButton.Location = new System.Drawing.Point(494, 365);
             this.deleteContainerButton.Name = "deleteContainerButton";
             this.deleteContainerButton.Size = new System.Drawing.Size(235, 53);
             this.deleteContainerButton.TabIndex = 5;
             this.deleteContainerButton.Text = "DELETE CONTAINER";
-            this.deleteContainerButton.UseVisualStyleBackColor = true;
+            this.deleteContainerButton.UseVisualStyleBackColor = false;
             this.deleteContainerButton.Click += new System.EventHandler(this.deleteContainerButton_Click);
             // 
             // label3
@@ -174,6 +176,7 @@
             this.updateContainer.TabIndex = 10;
             this.updateContainer.Text = "Update Container";
             this.updateContainer.UseVisualStyleBackColor = true;
+            this.updateContainer.Click += new System.EventHandler(this.updateContainer_Click);
             // 
             // Form1
             // 
