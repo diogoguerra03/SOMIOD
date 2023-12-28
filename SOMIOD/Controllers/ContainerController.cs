@@ -194,8 +194,12 @@ namespace SOMIOD.Controllers
                         }
                         catch (SqlException ex)
                         {
-
-                            if (ex.Number == 2601 || ex.Number == 2627)
+                            if(!(subEvent == "1" || subEvent == "2" || subEvent == "3"))
+                            {
+                                response = Request.CreateResponse(HttpStatusCode.Conflict, "O event de uma subscrição so pode ser 1,2 ou 3");
+                                return response;
+                            }
+                            else if (ex.Number == 2601 || ex.Number == 2627)
                             {
                                 response = Request.CreateResponse(HttpStatusCode.Conflict, "Nome da subscricao já existe");
                                 return response;
