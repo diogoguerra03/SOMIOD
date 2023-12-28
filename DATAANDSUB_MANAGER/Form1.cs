@@ -252,5 +252,181 @@ namespace DATAANDSUB_MANAGER
                 }
             }
         }
+
+        private void createDataButton_Click(object sender, EventArgs e)
+        {
+            if(application.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da aplicacao");
+                return;
+            }
+            if (container.Length == 0)
+            {
+                MessageBox.Show("Insira o nome do container");
+                return;
+            }
+            if (dataNameTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da data");
+                return;
+            }
+            if(dataContentTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o content da data");
+                return;
+            }
+
+
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "data");
+            doc.AppendChild(root);
+            XmlElement data = doc.CreateElement("data");
+            XmlElement name = doc.CreateElement("name");
+            XmlElement contentElement = doc.CreateElement("content");
+
+            contentElement.InnerText = dataContentTextBox.Text;
+            name.InnerText = dataNameTextBox.Text;
+
+            data.AppendChild(contentElement);
+            data.AppendChild(name);
+            root.AppendChild(data);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI +"/"+ application + "/" + container);
+
+            request.Method = "POST";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Criado com sucesso");
+                        loadDataListBox();
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+                }
+            }
+        }
+
+        private void createSubButton_Click(object sender, EventArgs e)
+        {
+            if (application.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da aplicacao");
+                return;
+            }
+            if (container.Length == 0)
+            {
+                MessageBox.Show("Insira o nome do container");
+                return;
+            }
+            if (subNameTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o nome da subscricao");
+                return;
+            }
+            if (subEventTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o event da subscricao");
+                return;
+            }
+            if (subEndpointTextBox.Text.Length == 0)
+            {
+                MessageBox.Show("Insira o endpoint da subscricao");
+                return;
+            }
+
+
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "subscription");
+            doc.AppendChild(root);
+            XmlElement subscription = doc.CreateElement("subscription");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = subNameTextBox.Text;
+            subscription.AppendChild(name);
+            XmlElement endpoint = doc.CreateElement("endpoint");
+            endpoint.InnerText = subEndpointTextBox.Text;
+            subscription.AppendChild(endpoint);
+            XmlElement subEvent = doc.CreateElement("event");
+            subEvent.InnerText = subEventTextBox.Text;
+            subscription.AppendChild(subEvent);
+            root.AppendChild(subscription);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container);
+
+            request.Method = "POST";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Criado com sucesso");
+                        loadSubListBox();
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+                }
+            }
+        }
     }
 }
