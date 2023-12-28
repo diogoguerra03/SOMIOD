@@ -414,7 +414,7 @@ namespace SOMIOD.Controllers
                 docSub.AppendChild(root);
                 foreach (Subscription sub in subs)
                 {
-                    XmlElement dataElement = docSub.CreateElement("data");
+                    XmlElement dataElement = docSub.CreateElement("subscription");
                     XmlElement name = docSub.CreateElement("name");
                     name.InnerText = sub.Name;
                     dataElement.AppendChild(name);

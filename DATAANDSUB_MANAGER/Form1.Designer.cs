@@ -37,6 +37,8 @@
             this.subListBox = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
+            this.deleteDataButton = new System.Windows.Forms.Button();
+            this.deleteSubscriptionButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // appTextBox
@@ -87,7 +89,7 @@
             this.dataListBox.ItemHeight = 16;
             this.dataListBox.Location = new System.Drawing.Point(571, 32);
             this.dataListBox.Name = "dataListBox";
-            this.dataListBox.Size = new System.Drawing.Size(317, 260);
+            this.dataListBox.Size = new System.Drawing.Size(356, 260);
             this.dataListBox.TabIndex = 5;
             // 
             // subListBox
@@ -96,7 +98,7 @@
             this.subListBox.ItemHeight = 16;
             this.subListBox.Location = new System.Drawing.Point(571, 323);
             this.subListBox.Name = "subListBox";
-            this.subListBox.Size = new System.Drawing.Size(317, 260);
+            this.subListBox.Size = new System.Drawing.Size(370, 260);
             this.subListBox.TabIndex = 6;
             // 
             // label3
@@ -117,11 +119,37 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Subscriptions";
             // 
+            // deleteDataButton
+            // 
+            this.deleteDataButton.BackColor = System.Drawing.Color.Red;
+            this.deleteDataButton.ForeColor = System.Drawing.Color.White;
+            this.deleteDataButton.Location = new System.Drawing.Point(571, 586);
+            this.deleteDataButton.Name = "deleteDataButton";
+            this.deleteDataButton.Size = new System.Drawing.Size(172, 65);
+            this.deleteDataButton.TabIndex = 9;
+            this.deleteDataButton.Text = "DELETE DATA";
+            this.deleteDataButton.UseVisualStyleBackColor = false;
+            this.deleteDataButton.Click += new System.EventHandler(this.deleteDataButton_Click);
+            // 
+            // deleteSubscriptionButton
+            // 
+            this.deleteSubscriptionButton.BackColor = System.Drawing.Color.Red;
+            this.deleteSubscriptionButton.ForeColor = System.Drawing.Color.White;
+            this.deleteSubscriptionButton.Location = new System.Drawing.Point(779, 586);
+            this.deleteSubscriptionButton.Name = "deleteSubscriptionButton";
+            this.deleteSubscriptionButton.Size = new System.Drawing.Size(162, 65);
+            this.deleteSubscriptionButton.TabIndex = 10;
+            this.deleteSubscriptionButton.Text = "DELETE SUBSCRIPTION";
+            this.deleteSubscriptionButton.UseVisualStyleBackColor = false;
+            this.deleteSubscriptionButton.Click += new System.EventHandler(this.deleteSubscriptionButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(982, 663);
+            this.Controls.Add(this.deleteSubscriptionButton);
+            this.Controls.Add(this.deleteDataButton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.subListBox);
@@ -149,6 +177,8 @@
         private System.Windows.Forms.ListBox subListBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button deleteDataButton;
+        private System.Windows.Forms.Button deleteSubscriptionButton;
     }
 }
 

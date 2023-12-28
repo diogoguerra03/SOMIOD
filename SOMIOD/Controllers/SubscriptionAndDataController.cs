@@ -26,36 +26,6 @@ namespace SOMIOD.Controllers
         public HttpResponseMessage DeleteSubscription(string application, string container, string name)
         {
             HttpResponseMessage response;
-            byte[] docBytes;
-            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    stream.CopyTo(memoryStream);
-                    docBytes = memoryStream.ToArray();
-                }
-            }
-
-            if (docBytes == null || docBytes.Length == 0)
-            {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
-                return response;
-            }
-
-            string xmlContent = Encoding.UTF8.GetString(docBytes);
-
-            XmlDocument doc = new XmlDocument();
-            try
-            {
-                doc.LoadXml(xmlContent);
-            }
-            catch (Exception)
-            {
-
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
-                return response;
-            }
-
             int appId = 0;
             int containerId = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -133,36 +103,38 @@ namespace SOMIOD.Controllers
         public HttpResponseMessage DeleteData(string application, string container, string name)
         {
             HttpResponseMessage response;
-            byte[] docBytes;
-            using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
-            {
-                using (MemoryStream memoryStream = new MemoryStream())
+            /*
+                
+                byte[] docBytes;
+                using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
                 {
-                    stream.CopyTo(memoryStream);
-                    docBytes = memoryStream.ToArray();
+                    using (MemoryStream memoryStream = new MemoryStream())
+                    {
+                        stream.CopyTo(memoryStream);
+                        docBytes = memoryStream.ToArray();
+                    }
                 }
-            }
 
-            if (docBytes == null || docBytes.Length == 0)
-            {
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
-                return response;
-            }
+                if (docBytes == null || docBytes.Length == 0)
+                {
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
+                    return response;
+                }
 
-            string xmlContent = Encoding.UTF8.GetString(docBytes);
+                string xmlContent = Encoding.UTF8.GetString(docBytes);
 
-            XmlDocument doc = new XmlDocument();
-            try
-            {
-                doc.LoadXml(xmlContent);
-            }
-            catch (Exception)
-            {
+                XmlDocument doc = new XmlDocument();
+                try
+                {
+                    doc.LoadXml(xmlContent);
+                }
+                catch (Exception)
+                {
 
-                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
-                return response;
-            }
-
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
+                    return response;
+                }
+            */
             int appId = 0;
             int containerId = 0;
             MqttClient mcClient = null;
