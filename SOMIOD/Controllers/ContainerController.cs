@@ -221,7 +221,7 @@ namespace SOMIOD.Controllers
                     {
                         int rowCount = 0;
                         connection.Open();
-                        SqlCommand command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND event = 1", connection);
+                        SqlCommand command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND (event = 1 OR event = 3)", connection);
                         command.Parameters.AddWithValue("@conId", containerId);
                         SqlDataReader reader = command.ExecuteReader();
                         while (reader.Read())

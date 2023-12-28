@@ -199,7 +199,7 @@ namespace SOMIOD.Controllers
                             if (rowsAffected > 0)
                             {
                                 rowCount = 0;
-                                command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND event = 2", connection);
+                                command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND (event = 2 OR event = 3)", connection);
                                 command.Parameters.AddWithValue("@conId", containerId);
                                 reader = command.ExecuteReader();
                                 while (reader.Read())
@@ -264,9 +264,9 @@ namespace SOMIOD.Controllers
 
         [HttpGet]
         [Route("{application}/{container}/data/{data}")]
-        public IHttpActionResult GetData(string application, string container, string data)
+        public HttpResponseMessage GetData(string application, string container, string data)
         {
-
+            HttpResponseMessage response;
             int appId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -283,7 +283,8 @@ namespace SOMIOD.Controllers
 
             if (appId == -1)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Aplicação nao existe");
+                return response;
             }
             int containerId = -1;
             using (SqlConnection connection = new SqlConnection(connectionString))
@@ -301,7 +302,8 @@ namespace SOMIOD.Controllers
             }
             if(containerId == -1)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Container nao existe");
+                return response;
             }
             Data dataObject = new Data();
             int count = 0;
@@ -325,9 +327,36 @@ namespace SOMIOD.Controllers
             }
             if(count == 0)
             {
-                return NotFound();
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Data com o nome "+ data +" nao existe");
+                return response;
             }
-            return Ok(dataObject);
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("response");
+            doc.AppendChild(root);
+            XmlElement dataElement = doc.CreateElement("data");
+            XmlElement idElement = doc.CreateElement("id");
+            idElement.InnerText = dataObject.Id.ToString();
+            dataElement.AppendChild(idElement);
+            XmlElement nameElement = doc.CreateElement("name");
+            nameElement.InnerText = dataObject.Name;
+            dataElement.AppendChild(nameElement);
+            XmlElement contentElement = doc.CreateElement("content");
+            contentElement.InnerText = dataObject.Content;
+            dataElement.AppendChild(contentElement);
+            XmlElement creationElement = doc.CreateElement("creation_dt");
+            creationElement.InnerText = dataObject.creation_dt.ToString();
+            dataElement.AppendChild(creationElement);
+            XmlElement containerIdElement = doc.CreateElement("container_id");
+            containerIdElement.InnerText = dataObject.ContainerId.ToString();
+            dataElement.AppendChild(containerIdElement);
+            root.AppendChild(dataElement);
+            
+            string xmlContent = doc.OuterXml;
+            response = Request.CreateResponse(HttpStatusCode.OK);
+            response.Content = new StringContent(xmlContent, Encoding.UTF8);
+            return response;
         }
 
 
