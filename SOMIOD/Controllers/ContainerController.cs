@@ -184,7 +184,7 @@ namespace SOMIOD.Controllers
 
                     if (!(Uri.TryCreate(endpoint, UriKind.Absolute, out Uri result) ))
                     {
-                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint não é uma URL válida ou não possui um esquema suportado (http, https, mqtt).");
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint não é uma URL válida.");
                         return response;
                     }
 
