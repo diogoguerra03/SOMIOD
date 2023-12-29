@@ -1,6 +1,6 @@
 ﻿namespace APP_A
 {
-    partial class Form1
+    partial class APP_A
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(APP_A));
             this.deleteContainer = new System.Windows.Forms.Button();
             this.DeleteSubscription = new System.Windows.Forms.Button();
             this.Delete_Data = new System.Windows.Forms.Button();
@@ -39,10 +39,10 @@
             // 
             // deleteContainer
             // 
-            this.deleteContainer.Location = new System.Drawing.Point(9, 11);
-            this.deleteContainer.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.deleteContainer.Location = new System.Drawing.Point(12, 14);
+            this.deleteContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.deleteContainer.Name = "deleteContainer";
-            this.deleteContainer.Size = new System.Drawing.Size(149, 33);
+            this.deleteContainer.Size = new System.Drawing.Size(199, 41);
             this.deleteContainer.TabIndex = 1;
             this.deleteContainer.Text = "DELETE CONTAINER";
             this.deleteContainer.UseVisualStyleBackColor = true;
@@ -50,10 +50,10 @@
             // 
             // DeleteSubscription
             // 
-            this.DeleteSubscription.Location = new System.Drawing.Point(9, 48);
-            this.DeleteSubscription.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.DeleteSubscription.Location = new System.Drawing.Point(12, 59);
+            this.DeleteSubscription.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.DeleteSubscription.Name = "DeleteSubscription";
-            this.DeleteSubscription.Size = new System.Drawing.Size(149, 31);
+            this.DeleteSubscription.Size = new System.Drawing.Size(199, 38);
             this.DeleteSubscription.TabIndex = 2;
             this.DeleteSubscription.Text = "Delete Sub";
             this.DeleteSubscription.UseVisualStyleBackColor = true;
@@ -61,10 +61,10 @@
             // 
             // Delete_Data
             // 
-            this.Delete_Data.Location = new System.Drawing.Point(9, 83);
-            this.Delete_Data.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Delete_Data.Location = new System.Drawing.Point(12, 102);
+            this.Delete_Data.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.Delete_Data.Name = "Delete_Data";
-            this.Delete_Data.Size = new System.Drawing.Size(149, 30);
+            this.Delete_Data.Size = new System.Drawing.Size(199, 37);
             this.Delete_Data.TabIndex = 3;
             this.Delete_Data.Text = "Delete Data";
             this.Delete_Data.UseVisualStyleBackColor = true;
@@ -72,10 +72,10 @@
             // 
             // buttonUpdateContainerName
             // 
-            this.buttonUpdateContainerName.Location = new System.Drawing.Point(11, 117);
-            this.buttonUpdateContainerName.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.buttonUpdateContainerName.Location = new System.Drawing.Point(15, 144);
+            this.buttonUpdateContainerName.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.buttonUpdateContainerName.Name = "buttonUpdateContainerName";
-            this.buttonUpdateContainerName.Size = new System.Drawing.Size(147, 38);
+            this.buttonUpdateContainerName.Size = new System.Drawing.Size(196, 47);
             this.buttonUpdateContainerName.TabIndex = 5;
             this.buttonUpdateContainerName.Text = "Update container Name";
             this.buttonUpdateContainerName.UseVisualStyleBackColor = true;
@@ -84,28 +84,29 @@
             // pictureBoxLamp
             // 
             this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligada;
-            this.pictureBoxLamp.Location = new System.Drawing.Point(180, 11);
-            this.pictureBoxLamp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBoxLamp.Location = new System.Drawing.Point(240, 14);
+            this.pictureBoxLamp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxLamp.Name = "pictureBoxLamp";
-            this.pictureBoxLamp.Size = new System.Drawing.Size(182, 197);
+            this.pictureBoxLamp.Size = new System.Drawing.Size(243, 242);
             this.pictureBoxLamp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLamp.TabIndex = 6;
             this.pictureBoxLamp.TabStop = false;
             // 
-            // Form1
+            // APP_A
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(392, 234);
+            this.ClientSize = new System.Drawing.Size(523, 288);
             this.Controls.Add(this.pictureBoxLamp);
             this.Controls.Add(this.buttonUpdateContainerName);
             this.Controls.Add(this.Delete_Data);
             this.Controls.Add(this.DeleteSubscription);
             this.Controls.Add(this.deleteContainer);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "APP_A";
             this.Text = "APP A";
-            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Load += new System.EventHandler(this.APP_A_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLamp)).EndInit();
             this.ResumeLayout(false);
 

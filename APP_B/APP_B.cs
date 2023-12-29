@@ -13,10 +13,10 @@ using System.Xml;
 
 namespace APP_B
 {
-    public partial class Form1 : Form
+    public partial class APP_B : Form
     {
         string baseURI = @"http://localhost:59454/api/somiod";
-        public Form1()
+        public APP_B()
         {
             InitializeComponent();
         }
@@ -94,6 +94,11 @@ namespace APP_B
                     MessageBox.Show(docResponse.InnerText);
                 }
             }
+
+        }
+
+        private void APP_B_Load(object sender, EventArgs e)
+        {
 
         }
     }

@@ -18,21 +18,16 @@ using uPLibrary.Networking.M2Mqtt.Messages;
 
 namespace APP_A
 {
-    public partial class Form1 : Form
+    public partial class APP_A : Form
     {
         string baseURI = @"http://localhost:59454/api/somiod";
         MqttClient mClient = null;
-        public Form1()
+        public APP_A()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            createApplication();
-            createContainer();
-            createSubscription();
-        }
+     
 
         public void createApplication()
         {
@@ -436,6 +431,13 @@ namespace APP_A
                     MessageBox.Show(docResponse.InnerText);
                 }
             }
+        }
+
+        private void APP_A_Load(object sender, EventArgs e)
+        {
+            createApplication();
+            createContainer();
+            createSubscription();
         }
     }
 }

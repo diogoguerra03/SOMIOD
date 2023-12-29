@@ -1,6 +1,6 @@
 ﻿namespace APP_B
 {
-    partial class Form1
+    partial class APP_B
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(APP_B));
             this.btnLightOn = new System.Windows.Forms.Button();
             this.btnLightOff = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -38,9 +38,10 @@
             this.btnLightOn.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLightOn.Location = new System.Drawing.Point(12, 73);
+            this.btnLightOn.Location = new System.Drawing.Point(16, 90);
+            this.btnLightOn.Margin = new System.Windows.Forms.Padding(4);
             this.btnLightOn.Name = "btnLightOn";
-            this.btnLightOn.Size = new System.Drawing.Size(311, 107);
+            this.btnLightOn.Size = new System.Drawing.Size(415, 132);
             this.btnLightOn.TabIndex = 0;
             this.btnLightOn.Text = "Light ON";
             this.btnLightOn.UseVisualStyleBackColor = true;
@@ -51,24 +52,27 @@
             this.btnLightOff.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnLightOff.Location = new System.Drawing.Point(12, 248);
+            this.btnLightOff.Location = new System.Drawing.Point(16, 305);
+            this.btnLightOff.Margin = new System.Windows.Forms.Padding(4);
             this.btnLightOff.Name = "btnLightOff";
-            this.btnLightOff.Size = new System.Drawing.Size(311, 107);
+            this.btnLightOff.Size = new System.Drawing.Size(415, 132);
             this.btnLightOff.TabIndex = 1;
             this.btnLightOff.Text = "Light Off";
             this.btnLightOff.UseVisualStyleBackColor = true;
             this.btnLightOff.Click += new System.EventHandler(this.btnLightOff_Click);
             // 
-            // Form1
+            // APP_B
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(335, 450);
+            this.ClientSize = new System.Drawing.Size(447, 554);
             this.Controls.Add(this.btnLightOff);
             this.Controls.Add(this.btnLightOn);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "Form1";
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Name = "APP_B";
             this.Text = "APP B";
+            this.Load += new System.EventHandler(this.APP_B_Load);
             this.ResumeLayout(false);
 
         }
