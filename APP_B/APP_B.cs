@@ -99,6 +99,65 @@ namespace APP_B
 
         private void APP_B_Load(object sender, EventArgs e)
         {
+            createApplication();
+        }
+
+        public void createApplication()
+        {
+            XmlDocument doc = new XmlDocument();
+            XmlDeclaration dec = doc.CreateXmlDeclaration("1.0", null, null);
+            doc.AppendChild(dec);
+            XmlElement root = doc.CreateElement("request");
+            root.SetAttribute("res_type", "application");
+            doc.AppendChild(root);
+            XmlElement application = doc.CreateElement("application");
+            XmlElement name = doc.CreateElement("name");
+            name.InnerText = "Switch";
+            application.AppendChild(name);
+            root.AppendChild(application);
+
+            string xmlContent = doc.OuterXml;
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI);
+
+            request.Method = "POST";
+            request.ContentType = "application/xml";
+            byte[] xmlBytes = Encoding.UTF8.GetBytes(xmlContent);
+            request.ContentLength = xmlBytes.Length;
+
+            using (Stream requestStream = request.GetRequestStream())
+            {
+                requestStream.Write(xmlBytes, 0, xmlBytes.Length);
+            }
+            try
+            {
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        MessageBox.Show("Switch criado com sucesso");
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+
+            }
 
         }
     }
