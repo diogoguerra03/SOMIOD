@@ -167,6 +167,14 @@ namespace SOMIOD.Controllers
                     string endpoint = subscriptionEndpoint.InnerText;
                     XmlNode subscriptionEvent = doc.SelectSingleNode("//subscription/event");
                     string subEvent = subscriptionEvent.InnerText;
+
+                    // verificar se o endpoint possui "mqtt://" ou "http://" no inicio do endpoint
+                    if (!(endpoint.StartsWith("mqtt://") || endpoint.StartsWith("http://")))
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint tem de começar por mqtt:// ou http://");
+                        return response;
+                    }
+                    
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         try
