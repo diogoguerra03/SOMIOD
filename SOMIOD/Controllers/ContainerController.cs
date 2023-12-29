@@ -176,12 +176,20 @@ namespace SOMIOD.Controllers
                     }
 
                     // verificar se o link nao vem vazio após a verificaçao do inicio do endpoint
-                    if (endpoint.Length < 8)
+                    if (string.IsNullOrWhiteSpace(endpoint) || endpoint.Length < 8)
                     {
                         response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint nao pode ser vazio");
                         return response;
                     }
-                    
+
+                    if (!(Uri.TryCreate(endpoint, UriKind.Absolute, out Uri result) ))
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint não é uma URL válida ou não possui um esquema suportado (http, https, mqtt).");
+                        return response;
+                    }
+
+
+
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         try
