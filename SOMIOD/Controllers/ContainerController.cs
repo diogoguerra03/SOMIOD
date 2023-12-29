@@ -174,6 +174,13 @@ namespace SOMIOD.Controllers
                         response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint tem de começar por mqtt:// ou http://");
                         return response;
                     }
+
+                    // verificar se o link nao vem vazio após a verificaçao do inicio do endpoint
+                    if (endpoint.Length < 8)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint nao pode ser vazio");
+                        return response;
+                    }
                     
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
