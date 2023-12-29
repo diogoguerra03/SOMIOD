@@ -9,6 +9,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Xml;
@@ -182,12 +183,17 @@ namespace SOMIOD.Controllers
                         return response;
                     }
 
-                    if (!(Uri.TryCreate(endpoint, UriKind.Absolute, out Uri result) ))
-                    {
-                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint não é uma URL válida.");
-                        return response;
-                    }
+                    // verificar se o endpoint é um url valido
+                    // remover o mqtt:// ou http:// do endpoint
+                    string ipAddress = endpoint.Substring(7);
+                    string pattern = @"^((([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\.){3}([0-1]?[0-9]{1,2}|2[0-4][0-9]|25[0-5]))$";
+                    bool result = Regex.IsMatch(ipAddress, pattern);
 
+                    if (!result)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "O endpoint nao é um endereço ip válido");
+                        return response;
+                    }                  
 
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
