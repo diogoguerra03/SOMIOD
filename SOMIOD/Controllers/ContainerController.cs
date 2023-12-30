@@ -268,7 +268,7 @@ namespace SOMIOD.Controllers
                                 {
                                     Console.WriteLine("Error connecting to message broker...");
                                 }
-                                mcClient.Publish(container, Encoding.UTF8.GetBytes(content));
+                                mcClient.Publish(application+container, Encoding.UTF8.GetBytes(content));
                             }
                             else if (endpoint.Substring(0, 4) == "http")
                             {

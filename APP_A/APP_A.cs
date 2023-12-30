@@ -146,7 +146,7 @@ namespace APP_A
             }
 
             mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
-            string[] mStrTopicsInfo = { name.InnerText };
+            string[] mStrTopicsInfo = { "Lighting" + name.InnerText };
             mClient.Connect(Guid.NewGuid().ToString());
             if (!mClient.IsConnected)
             {
