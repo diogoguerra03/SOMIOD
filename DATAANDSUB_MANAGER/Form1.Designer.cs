@@ -42,9 +42,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.dataNameTextBox = new System.Windows.Forms.TextBox();
-            this.dataContentTextBox = new System.Windows.Forms.TextBox();
             this.createDataButton = new System.Windows.Forms.Button();
+            this.dataContentTextBox = new System.Windows.Forms.TextBox();
+            this.dataNameTextBox = new System.Windows.Forms.TextBox();
             this.label7 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -53,6 +53,8 @@
             this.subEndpointTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.createSubButton = new System.Windows.Forms.Button();
+            this.getDataDetails = new System.Windows.Forms.Button();
+            this.getSubDetails = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -139,7 +141,7 @@
             // 
             this.deleteDataButton.BackColor = System.Drawing.Color.Red;
             this.deleteDataButton.ForeColor = System.Drawing.Color.White;
-            this.deleteDataButton.Location = new System.Drawing.Point(571, 586);
+            this.deleteDataButton.Location = new System.Drawing.Point(571, 660);
             this.deleteDataButton.Name = "deleteDataButton";
             this.deleteDataButton.Size = new System.Drawing.Size(172, 65);
             this.deleteDataButton.TabIndex = 9;
@@ -151,7 +153,7 @@
             // 
             this.deleteSubscriptionButton.BackColor = System.Drawing.Color.Red;
             this.deleteSubscriptionButton.ForeColor = System.Drawing.Color.White;
-            this.deleteSubscriptionButton.Location = new System.Drawing.Point(779, 586);
+            this.deleteSubscriptionButton.Location = new System.Drawing.Point(779, 660);
             this.deleteSubscriptionButton.Name = "deleteSubscriptionButton";
             this.deleteSubscriptionButton.Size = new System.Drawing.Size(162, 65);
             this.deleteSubscriptionButton.TabIndex = 10;
@@ -191,21 +193,6 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Create Data";
             // 
-            // dataNameTextBox
-            // 
-            this.dataNameTextBox.Location = new System.Drawing.Point(78, 37);
-            this.dataNameTextBox.Name = "dataNameTextBox";
-            this.dataNameTextBox.Size = new System.Drawing.Size(108, 22);
-            this.dataNameTextBox.TabIndex = 13;
-            // 
-            // dataContentTextBox
-            // 
-            this.dataContentTextBox.Location = new System.Drawing.Point(86, 73);
-            this.dataContentTextBox.Multiline = true;
-            this.dataContentTextBox.Name = "dataContentTextBox";
-            this.dataContentTextBox.Size = new System.Drawing.Size(188, 100);
-            this.dataContentTextBox.TabIndex = 14;
-            // 
             // createDataButton
             // 
             this.createDataButton.Location = new System.Drawing.Point(329, 63);
@@ -215,6 +202,21 @@
             this.createDataButton.Text = "Create Data";
             this.createDataButton.UseVisualStyleBackColor = true;
             this.createDataButton.Click += new System.EventHandler(this.createDataButton_Click);
+            // 
+            // dataContentTextBox
+            // 
+            this.dataContentTextBox.Location = new System.Drawing.Point(86, 73);
+            this.dataContentTextBox.Multiline = true;
+            this.dataContentTextBox.Name = "dataContentTextBox";
+            this.dataContentTextBox.Size = new System.Drawing.Size(188, 100);
+            this.dataContentTextBox.TabIndex = 14;
+            // 
+            // dataNameTextBox
+            // 
+            this.dataNameTextBox.Location = new System.Drawing.Point(78, 37);
+            this.dataNameTextBox.Name = "dataNameTextBox";
+            this.dataNameTextBox.Size = new System.Drawing.Size(108, 22);
+            this.dataNameTextBox.TabIndex = 13;
             // 
             // label7
             // 
@@ -290,11 +292,33 @@
             this.createSubButton.UseVisualStyleBackColor = true;
             this.createSubButton.Click += new System.EventHandler(this.createSubButton_Click);
             // 
+            // getDataDetails
+            // 
+            this.getDataDetails.Location = new System.Drawing.Point(571, 589);
+            this.getDataDetails.Name = "getDataDetails";
+            this.getDataDetails.Size = new System.Drawing.Size(172, 65);
+            this.getDataDetails.TabIndex = 23;
+            this.getDataDetails.Text = "Get Data Details";
+            this.getDataDetails.UseVisualStyleBackColor = true;
+            this.getDataDetails.Click += new System.EventHandler(this.getDataDetails_Click);
+            // 
+            // getSubDetails
+            // 
+            this.getSubDetails.Location = new System.Drawing.Point(779, 589);
+            this.getSubDetails.Name = "getSubDetails";
+            this.getSubDetails.Size = new System.Drawing.Size(162, 65);
+            this.getSubDetails.TabIndex = 24;
+            this.getSubDetails.Text = "Get Subscription Details";
+            this.getSubDetails.UseVisualStyleBackColor = true;
+            this.getSubDetails.Click += new System.EventHandler(this.getSubDetails_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(982, 663);
+            this.ClientSize = new System.Drawing.Size(982, 748);
+            this.Controls.Add(this.getSubDetails);
+            this.Controls.Add(this.getDataDetails);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.deleteSubscriptionButton);
@@ -346,6 +370,8 @@
         private System.Windows.Forms.TextBox subEndpointTextBox;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button createSubButton;
+        private System.Windows.Forms.Button getDataDetails;
+        private System.Windows.Forms.Button getSubDetails;
     }
 }
 

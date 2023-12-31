@@ -428,5 +428,146 @@ namespace DATAANDSUB_MANAGER
                 }
             }
         }
+
+        private void getDataDetails_Click(object sender, EventArgs e)
+        {
+            if (dataListBox.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione uma data");
+                return;
+            }
+
+            string data = dataListBox.SelectedItem.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container + "/data/" + data);
+            request.Method = "GET";
+            request.ContentType = "application/xml";
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        byte[] docBytes;
+
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                responseStream.CopyTo(memoryStream);
+                                docBytes = memoryStream.ToArray();
+                            }
+                        }
+
+                        if (docBytes == null || docBytes.Length == 0)
+                        {
+                            MessageBox.Show("Erro ao ler xml");
+                            return;
+                        }
+                        string xmlContent = Encoding.UTF8.GetString(docBytes);
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(xmlContent);
+                        XmlNode dataElement = doc.SelectSingleNode("//response/data");
+                        MessageBox.Show("Id: " + dataElement["id"].InnerText + "\n" +
+                            "Name: " + dataElement["name"].InnerText + "\n" +
+                            "Content: " + dataElement["content"].InnerText + "\n" +
+                            "Creation Date: " + dataElement["creation_dt"].InnerText + "\n" +
+                            "Container Id: " + dataElement["container_id"].InnerText);
+
+
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+            }
+        }
+
+        private void getSubDetails_Click(object sender, EventArgs e)
+        {
+            if (subListBox.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione uma data");
+                return;
+            }
+
+            string sub = subListBox.SelectedItem.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container + "/sub/" + sub);
+            request.Method = "GET";
+            request.ContentType = "application/xml";
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        byte[] docBytes;
+
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                responseStream.CopyTo(memoryStream);
+                                docBytes = memoryStream.ToArray();
+                            }
+                        }
+
+                        if (docBytes == null || docBytes.Length == 0)
+                        {
+                            MessageBox.Show("Erro ao ler xml");
+                            return;
+                        }
+                        string xmlContent = Encoding.UTF8.GetString(docBytes);
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(xmlContent);
+                        XmlNode dataElement = doc.SelectSingleNode("//response/subscription");
+                        MessageBox.Show("Id: " + dataElement["id"].InnerText + "\n" +
+                            "Name: " + dataElement["name"].InnerText + "\n" +
+                            "Creation Date: " + dataElement["creation_dt"].InnerText + "\n" +
+                            "Container Id: " + dataElement["container_id"].InnerText + "\n" +
+                            "Event: " + dataElement["event"].InnerText + "\n" +
+                            "Endpoint: " + dataElement["endpoint"].InnerText);
+
+
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+            }
+        }
     }
 }
