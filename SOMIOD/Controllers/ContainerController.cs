@@ -164,6 +164,11 @@ namespace SOMIOD.Controllers
                 {
                     XmlNode subscriptionName = doc.SelectSingleNode("//subscription/name");
                     string name = subscriptionName.InnerText;
+                    if (name.Length == 0)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para a subscription");
+                        return response;
+                    }
                     XmlNode subscriptionEndpoint = doc.SelectSingleNode("//subscription/endpoint");
                     string endpoint = subscriptionEndpoint.InnerText;
                     XmlNode subscriptionEvent = doc.SelectSingleNode("//subscription/event");
@@ -248,8 +253,18 @@ namespace SOMIOD.Controllers
                     string endpoint = null;
                     XmlNode dataName = doc.SelectSingleNode("//data/name");
                     string name = dataName.InnerText;
+                    if (name.Length == 0)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para a data");
+                        return response;
+                    }
                     XmlNode dataContent = doc.SelectSingleNode("//data/content");
                     string content = dataContent.InnerXml;
+                    if (content.Length == 0)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira o content que quer enviar");
+                        return response;
+                    }
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         int rowCount = 0;

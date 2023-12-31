@@ -113,6 +113,11 @@ namespace SOMIOD.Controllers
                 {
                     XmlNode application = doc.SelectSingleNode("//application/name");
                     string name = application.InnerText;
+                    if(name.Length == 0)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para a aplicação");
+                        return response;
+                    }
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         try
@@ -333,6 +338,11 @@ namespace SOMIOD.Controllers
                 {
                     XmlNode containerName = doc.SelectSingleNode("//container/name");
                     string name = containerName.InnerText;
+                    if (name.Length == 0)
+                    {
+                        response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para o container");
+                        return response;
+                    }
                     int id = 0;
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
