@@ -80,7 +80,15 @@ namespace APP_MANAGER
             }
             catch (WebException ex)
             {
-                MessageBox.Show($"WebException: {ex.Message}");
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
             }
 
         }
@@ -268,6 +276,74 @@ namespace APP_MANAGER
         private void btnRefresh_Click(object sender, EventArgs e)
         {
             loadListBoxApps();
+        }
+
+        private void getAppDetails_Click(object sender, EventArgs e)
+        {
+            if (listBoxApps.SelectedItem == null)
+            {
+                MessageBox.Show("Selecione uma aplicação");
+                return;
+            }
+            string app = listBoxApps.SelectedItem.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + app);
+            request.Method = "GET";
+            request.ContentType = "application/xml";
+            request.Headers.Add("somiod-discover", "application");
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        byte[] docBytes;
+                        
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                responseStream.CopyTo(memoryStream);
+                                docBytes = memoryStream.ToArray();
+                            }
+                        }
+
+                        if (docBytes == null || docBytes.Length == 0)
+                        {
+                            MessageBox.Show("Erro ao ler xml");
+                            return;
+                        }
+                        string xmlContent = Encoding.UTF8.GetString(docBytes);
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(xmlContent);
+                        XmlNode application = doc.SelectSingleNode("//response/application");
+                        MessageBox.Show("Id: " + application["id"].InnerText + "\n" +
+                            "Name: " + application["name"].InnerText + "\n" +
+                            "Creation_dt: " + application["creation_dt"].InnerText);
+
+
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+            }
         }
     }
 }
