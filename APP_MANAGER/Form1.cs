@@ -290,7 +290,6 @@ namespace APP_MANAGER
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + app);
             request.Method = "GET";
             request.ContentType = "application/xml";
-            request.Headers.Add("somiod-discover", "application");
 
             try
             {

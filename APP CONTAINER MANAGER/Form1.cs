@@ -271,5 +271,74 @@ namespace APP_CONTAINER_MANAGER
                 }
             }
         }
+
+        private void getContainerDetails_Click(object sender, EventArgs e)
+        {
+            if (containersListBox.SelectedItems.Count == 0)
+            {
+                MessageBox.Show("Selecione um container");
+                return;
+            }
+
+            string container = containersListBox.SelectedItem.ToString();
+
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + application + "/" + container);
+            request.Method = "GET";
+            request.ContentType = "application/xml";
+
+            try
+            {
+                // Get the response from the server
+                using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+                {
+                    // Check if the request was successful
+                    if (response.StatusCode != HttpStatusCode.OK)
+                    {
+                        MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
+                    }
+                    else
+                    {
+                        byte[] docBytes;
+
+                        using (Stream responseStream = response.GetResponseStream())
+                        {
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                responseStream.CopyTo(memoryStream);
+                                docBytes = memoryStream.ToArray();
+                            }
+                        }
+
+                        if (docBytes == null || docBytes.Length == 0)
+                        {
+                            MessageBox.Show("Erro ao ler xml");
+                            return;
+                        }
+                        string xmlContent = Encoding.UTF8.GetString(docBytes);
+                        XmlDocument doc = new XmlDocument();
+                        doc.LoadXml(xmlContent);
+                        XmlNode containerElement = doc.SelectSingleNode("//response/container");
+                        MessageBox.Show("Id: " + containerElement["id"].InnerText + "\n" +
+                            "Name: " + containerElement["name"].InnerText + "\n" +
+                            "Creation Date: " + containerElement["creation_dt"].InnerText + "\n" +
+                            "Application Id: " + containerElement["application_id"].InnerText);
+
+
+                    }
+                }
+            }
+            catch (WebException ex)
+            {
+                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
+                {
+                    string responseContent = reader.ReadToEnd();
+                    XmlDocument docResponse = new XmlDocument();
+                    docResponse.LoadXml(responseContent);
+
+                    MessageBox.Show(docResponse.InnerText);
+
+                }
+            }
+        }
     }
 }

@@ -42,6 +42,7 @@
             this.updateContainerTextBox = new System.Windows.Forms.TextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.updateContainer = new System.Windows.Forms.Button();
+            this.getContainerDetails = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -82,9 +83,9 @@
             // 
             // getContainerButton
             // 
-            this.getContainerButton.Location = new System.Drawing.Point(229, 48);
+            this.getContainerButton.Location = new System.Drawing.Point(214, 38);
             this.getContainerButton.Name = "getContainerButton";
-            this.getContainerButton.Size = new System.Drawing.Size(150, 23);
+            this.getContainerButton.Size = new System.Drawing.Size(172, 43);
             this.getContainerButton.TabIndex = 4;
             this.getContainerButton.Text = "Get Containers";
             this.getContainerButton.UseVisualStyleBackColor = true;
@@ -94,7 +95,7 @@
             // 
             this.deleteContainerButton.BackColor = System.Drawing.Color.Red;
             this.deleteContainerButton.ForeColor = System.Drawing.Color.White;
-            this.deleteContainerButton.Location = new System.Drawing.Point(494, 365);
+            this.deleteContainerButton.Location = new System.Drawing.Point(498, 399);
             this.deleteContainerButton.Name = "deleteContainerButton";
             this.deleteContainerButton.Size = new System.Drawing.Size(235, 53);
             this.deleteContainerButton.TabIndex = 5;
@@ -178,11 +179,22 @@
             this.updateContainer.UseVisualStyleBackColor = true;
             this.updateContainer.Click += new System.EventHandler(this.updateContainer_Click);
             // 
+            // getContainerDetails
+            // 
+            this.getContainerDetails.Location = new System.Drawing.Point(498, 349);
+            this.getContainerDetails.Name = "getContainerDetails";
+            this.getContainerDetails.Size = new System.Drawing.Size(235, 44);
+            this.getContainerDetails.TabIndex = 9;
+            this.getContainerDetails.Text = "Get Container Details";
+            this.getContainerDetails.UseVisualStyleBackColor = true;
+            this.getContainerDetails.Click += new System.EventHandler(this.getContainerDetails_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 527);
+            this.Controls.Add(this.getContainerDetails);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.deleteContainerButton);
@@ -218,6 +230,7 @@
         private System.Windows.Forms.TextBox updateContainerTextBox;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button updateContainer;
+        private System.Windows.Forms.Button getContainerDetails;
     }
 }
 
