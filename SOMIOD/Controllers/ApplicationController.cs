@@ -63,7 +63,7 @@ namespace SOMIOD.Controllers
 
             string xmlContent = doc.OuterXml;
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.OK);
-            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml"   );
+            response.Content = new StringContent(xmlContent, Encoding.UTF8, "application/xml");
             return response;
         }
 
@@ -145,7 +145,7 @@ namespace SOMIOD.Controllers
                             // Handle the unique constraint violation
                             if (ex.Number == 2601 || ex.Number == 2627)
                             {
-                                response = Request.CreateResponse(HttpStatusCode.Conflict, "Nome de aplicação já existe");
+                                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nome de aplicação já existe");
                                 return response;
                             }
                             else
@@ -465,6 +465,11 @@ namespace SOMIOD.Controllers
 
                 XmlNode applicationName = doc.SelectSingleNode("//application/name");
                 string name = applicationName.InnerText;
+                if (name.Length == 0)
+                {
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para a aplicação");
+                    return response;
+                }
                 int id = 0;
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -488,7 +493,6 @@ namespace SOMIOD.Controllers
                         }
 
                         command = new SqlCommand("UPDATE Application SET name = @name WHERE id = @id", connection);
-                        // FALTA O DATE
                         command.Parameters.AddWithValue("@name", name);
                         command.Parameters.AddWithValue("@id", id);
 
@@ -499,14 +503,11 @@ namespace SOMIOD.Controllers
                             response = Request.CreateResponse(HttpStatusCode.InternalServerError, "Erro a atualizar os dados da aplicaçao");
                             return response;
                         }
-
-                        Console.WriteLine("UPDATE SUCCESSFULL!!!!");
                         response = Request.CreateResponse(HttpStatusCode.OK);
                         return response;
                     }
                     catch (SqlException ex)
                     {
-                        // Handle the unique constraint violation
                         if (ex.Number == 2601 || ex.Number == 2627)
                         {
                             response = Request.CreateResponse(HttpStatusCode.BadRequest, "Nome da aplicação ja existe");
