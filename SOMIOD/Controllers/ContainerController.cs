@@ -371,8 +371,10 @@ namespace SOMIOD.Controllers
 
             if (appId == -1)
             {
-                return null;
+                response = Request.CreateResponse(HttpStatusCode.BadRequest, "Application com o nome " + application + " não existe");
+                return response;
             }
+            int rowCount = 0;
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 connection.Open();
@@ -387,6 +389,12 @@ namespace SOMIOD.Controllers
                     containerObject.Name = reader.GetString(1);
                     containerObject.creation_dt = reader.GetDateTime(2);
                     containerObject.ApplicationId = reader.GetInt32(3);
+                    rowCount++;
+                }
+                if (rowCount == 0)
+                {
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Container com o nome " + container + " não existe");
+                    return response;
                 }
                 reader.Close();
             }
@@ -474,7 +482,7 @@ namespace SOMIOD.Controllers
                 response.Content = new StringContent(xmlContentSub, Encoding.UTF8, "application/xml");
                 return response;
             }
-
+            
             XmlDocument docContainer = new XmlDocument();
             XmlDeclaration decContainer = docContainer.CreateXmlDeclaration("1.0", null, null);
             docContainer.AppendChild(decContainer);
@@ -560,7 +568,11 @@ namespace SOMIOD.Controllers
             {
                 XmlNode containerName = doc.SelectSingleNode("//container/name");
                 string name = containerName.InnerText;
-
+                if (name.Length == 0)
+                {
+                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Insira um nome para o container");
+                    return response;
+                }
                 int appId = 0;
                 int containerId = 0;
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -616,7 +628,6 @@ namespace SOMIOD.Controllers
                         return response;
                     }
 
-                    Console.WriteLine("UPDATE SUCCESSFULL!!!!");
                     response = Request.CreateResponse(HttpStatusCode.OK);
                     return response;
 

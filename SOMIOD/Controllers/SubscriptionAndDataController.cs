@@ -103,38 +103,6 @@ namespace SOMIOD.Controllers
         public HttpResponseMessage DeleteData(string application, string container, string name)
         {
             HttpResponseMessage response;
-            /*
-                
-                byte[] docBytes;
-                using (Stream stream = Request.Content.ReadAsStreamAsync().Result)
-                {
-                    using (MemoryStream memoryStream = new MemoryStream())
-                    {
-                        stream.CopyTo(memoryStream);
-                        docBytes = memoryStream.ToArray();
-                    }
-                }
-
-                if (docBytes == null || docBytes.Length == 0)
-                {
-                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "No data provided");
-                    return response;
-                }
-
-                string xmlContent = Encoding.UTF8.GetString(docBytes);
-
-                XmlDocument doc = new XmlDocument();
-                try
-                {
-                    doc.LoadXml(xmlContent);
-                }
-                catch (Exception)
-                {
-
-                    response = Request.CreateResponse(HttpStatusCode.BadRequest, "Erro a converter data em XML");
-                    return response;
-                }
-            */
             int appId = 0;
             int containerId = 0;
             MqttClient mcClient = null;
