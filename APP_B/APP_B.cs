@@ -23,12 +23,22 @@ namespace APP_B
 
         private void btnLightOn_Click(object sender, EventArgs e)
         {
-            createData("on", "1");
+            XmlDocument doc = new XmlDocument();
+            XmlElement statusElement = doc.CreateElement("status");
+            statusElement.InnerText = "on";
+            doc.AppendChild(statusElement);
+            string xmlContent = doc.OuterXml;
+            createData("on", xmlContent);
         }
 
         private void btnLightOff_Click(object sender, EventArgs e)
         {
-            createData("off", "0");
+            XmlDocument doc = new XmlDocument();
+            XmlElement statusElement = doc.CreateElement("status");
+            statusElement.InnerText = "off";
+            doc.AppendChild(statusElement);
+            string xmlContent = doc.OuterXml;
+            createData("off", xmlContent);
         }
 
         public void createData(string valor, string content)
@@ -43,7 +53,7 @@ namespace APP_B
             XmlElement name = doc.CreateElement("name");
             XmlElement contentElement = doc.CreateElement("content");
 
-            contentElement.InnerText = content;
+            contentElement.InnerXml = content;
 
             // create a timestamp
             long timeStamp = (long) (DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalMilliseconds;

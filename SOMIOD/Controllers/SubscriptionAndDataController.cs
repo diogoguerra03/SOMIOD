@@ -147,7 +147,8 @@ namespace SOMIOD.Controllers
                             if (rowsAffected > 0)
                             {
                                 rowCount = 0;
-                                command = new SqlCommand("SELECT endpoint FROM Subscription WHERE container_id = @conId AND (event = 2 OR event = 3)", connection);
+                                command = new SqlCommand("SELECT endpoint FROM Subscription " +
+                                    "WHERE container_id = @conId AND (event = 2 OR event = 3)", connection);
                                 command.Parameters.AddWithValue("@conId", containerId);
                                 reader = command.ExecuteReader();
                                 while (reader.Read())
@@ -161,7 +162,7 @@ namespace SOMIOD.Controllers
                                         {
                                             Console.WriteLine("Error connecting to message broker...");
                                         }
-                                        mcClient.Publish(application + container, Encoding.UTF8.GetBytes("Data eliminada...")); //TODO Mudar esta mensagem
+                                        mcClient.Publish(application + container, Encoding.UTF8.GetBytes("Data: " + name + " eliminada com sucesso"));
                                     }
                                     else if (endpoint.Substring(0, 4) == "http")
                                     {

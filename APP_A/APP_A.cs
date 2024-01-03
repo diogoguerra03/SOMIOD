@@ -229,11 +229,22 @@ namespace APP_A
             Image lampadaLigada = Resources.lampadaLigada;
             string receivedContent = Encoding.UTF8.GetString(e.Message);
 
-            if(receivedContent == "1")
+            XmlDocument doc = new XmlDocument();
+            try
+            {
+                doc.LoadXml(receivedContent);
+            }
+            catch (Exception)
+            {
+
+                return;
+            }
+            XmlNode status = doc.SelectSingleNode("/status");
+            if (status.InnerText == "on")
             {
                 pictureBoxLamp.Image = lampadaLigada;
             }
-            else if(receivedContent == "0")
+            else if(status.InnerText == "off")
             {
                 pictureBoxLamp.Image = lampadaDesligada;
             }
