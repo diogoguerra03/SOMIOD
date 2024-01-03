@@ -74,15 +74,7 @@ namespace APP_A
             catch (WebException ex)
             {
 
-                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
-                {
-                    string responseContent = reader.ReadToEnd();
-                    XmlDocument docResponse = new XmlDocument();
-                    docResponse.LoadXml(responseContent);
-
-                    MessageBox.Show(docResponse.InnerText);
-
-                }
+                return;
                 
             }
             
@@ -134,15 +126,7 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
-                {
-                    string responseContent = reader.ReadToEnd();
-                    XmlDocument docResponse = new XmlDocument();
-                    docResponse.LoadXml(responseContent);
-
-                    MessageBox.Show(docResponse.InnerText);
-
-                }
+                return;
             }
 
             mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
@@ -210,14 +194,7 @@ namespace APP_A
             }
             catch (WebException ex)
             {
-                using (StreamReader reader = new StreamReader(ex.Response.GetResponseStream()))
-                {
-                    string responseContent = reader.ReadToEnd();
-                    XmlDocument docResponse = new XmlDocument();
-                    docResponse.LoadXml(responseContent);
-
-                    MessageBox.Show(docResponse.InnerText);
-                }
+                return;
             }
 
         }
