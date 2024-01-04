@@ -263,7 +263,7 @@
             // 
             this.subEndpointTextBox.Location = new System.Drawing.Point(85, 105);
             this.subEndpointTextBox.Name = "subEndpointTextBox";
-            this.subEndpointTextBox.Size = new System.Drawing.Size(100, 22);
+            this.subEndpointTextBox.Size = new System.Drawing.Size(189, 22);
             this.subEndpointTextBox.TabIndex = 21;
             // 
             // groupBox2
