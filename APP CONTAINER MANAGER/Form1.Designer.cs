@@ -204,7 +204,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.appTextBox);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "CONTAINER MANAGER";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

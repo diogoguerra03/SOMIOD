@@ -333,7 +333,7 @@
             this.Controls.Add(this.containerTextBox);
             this.Controls.Add(this.appTextBox);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "DATA AND SUB MANAGER";
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);

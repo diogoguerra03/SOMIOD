@@ -16,7 +16,7 @@ namespace APP_A
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new APP_A());
+            Application.Run(new GARAGEM());
         }
     }
 }

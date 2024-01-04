@@ -100,16 +100,16 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="APP_A.cs">
+    <Compile Include="GARAGEM.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="APP_A.Designer.cs">
-      <DependentUpon>APP_A.cs</DependentUpon>
+    <Compile Include="GARAGEM.Designer.cs">
+      <DependentUpon>GARAGEM.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="APP_A.resx">
-      <DependentUpon>APP_A.cs</DependentUpon>
+    <EmbeddedResource Include="GARAGEM.resx">
+      <DependentUpon>GARAGEM.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
