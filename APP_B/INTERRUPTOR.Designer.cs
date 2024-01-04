@@ -45,7 +45,7 @@
             this.btnLightOn.TabIndex = 0;
             this.btnLightOn.Text = "ABRIR GARAGEM";
             this.btnLightOn.UseVisualStyleBackColor = true;
-            this.btnLightOn.Click += new System.EventHandler(this.btnLightOn_Click);
+            this.btnLightOn.Click += new System.EventHandler(this.btnAbrirGaragem_Click);
             // 
             // btnLightOff
             // 
@@ -59,7 +59,7 @@
             this.btnLightOff.TabIndex = 1;
             this.btnLightOff.Text = "FECHAR GARAGEM";
             this.btnLightOff.UseVisualStyleBackColor = true;
-            this.btnLightOff.Click += new System.EventHandler(this.btnLightOff_Click);
+            this.btnLightOff.Click += new System.EventHandler(this.btnFecharGaragem_Click);
             // 
             // INTERRUPTOR
             // 

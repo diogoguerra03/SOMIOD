@@ -21,7 +21,7 @@ namespace APP_B
             InitializeComponent();
         }
 
-        private void btnLightOn_Click(object sender, EventArgs e)
+        private void btnAbrirGaragem_Click(object sender, EventArgs e)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement statusElement = doc.CreateElement("status");
@@ -31,7 +31,7 @@ namespace APP_B
             createData("abrir", xmlContent);
         }
 
-        private void btnLightOff_Click(object sender, EventArgs e)
+        private void btnFecharGaragem_Click(object sender, EventArgs e)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement statusElement = doc.CreateElement("status");
