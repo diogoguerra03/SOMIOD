@@ -25,20 +25,20 @@ namespace APP_B
         {
             XmlDocument doc = new XmlDocument();
             XmlElement statusElement = doc.CreateElement("status");
-            statusElement.InnerText = "on";
+            statusElement.InnerText = "abrir";
             doc.AppendChild(statusElement);
             string xmlContent = doc.OuterXml;
-            createData("on", xmlContent);
+            createData("abrir", xmlContent);
         }
 
         private void btnLightOff_Click(object sender, EventArgs e)
         {
             XmlDocument doc = new XmlDocument();
             XmlElement statusElement = doc.CreateElement("status");
-            statusElement.InnerText = "off";
+            statusElement.InnerText = "fechar";
             doc.AppendChild(statusElement);
             string xmlContent = doc.OuterXml;
-            createData("off", xmlContent);
+            createData("fechar", xmlContent);
         }
 
         public void createData(string valor, string content)
@@ -65,7 +65,7 @@ namespace APP_B
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb/");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Garage/garage_door/");
 
             request.Method = "POST";
             request.ContentType = "application/xml";

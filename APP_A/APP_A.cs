@@ -39,7 +39,7 @@ namespace APP_A
             doc.AppendChild(root);
             XmlElement application = doc.CreateElement("application");
             XmlElement name = doc.CreateElement("name");
-            name.InnerText = "Lighting";
+            name.InnerText = "Garage";
             application.AppendChild(name);
             root.AppendChild(application);
 
@@ -90,13 +90,13 @@ namespace APP_A
             doc.AppendChild(root);
             XmlElement container = doc.CreateElement("container");
             XmlElement name = doc.CreateElement("name");
-            name.InnerText = "light_bulb";
+            name.InnerText = "garage_door";
             container.AppendChild(name);
             root.AppendChild(container);
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Garage");
 
             request.Method = "POST";
             request.ContentType = "application/xml";
@@ -108,7 +108,7 @@ namespace APP_A
                 requestStream.Write(xmlBytes, 0, xmlBytes.Length);
             }
             mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
-            string[] mStrTopicsInfo = { ("Lighting" + name.InnerText).ToLower() };
+            string[] mStrTopicsInfo = { ("Garage" + name.InnerText).ToLower() };
             mClient.Connect(Guid.NewGuid().ToString());
             if (!mClient.IsConnected)
             {
@@ -165,7 +165,7 @@ namespace APP_A
 
             string xmlContent = doc.OuterXml;
 
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Lighting/light_bulb");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/Garage/garage_door");
 
             request.Method = "POST";
             request.ContentType = "application/xml";
@@ -203,8 +203,8 @@ namespace APP_A
         private void client_MqttMsgPublishReceived(object sender, MqttMsgPublishEventArgs e)
         {
            
-            Image lampadaDesligada = Resources.lampadaDesligada;
-            Image lampadaLigada = Resources.lampadaLigada;
+            Image garagemFechada = Resources.garagemFechada;
+            Image garagemAberta = Resources.garagemAberta;
             string receivedContent = Encoding.UTF8.GetString(e.Message);
 
             XmlDocument doc = new XmlDocument();
@@ -218,13 +218,13 @@ namespace APP_A
                 return;
             }
             XmlNode status = doc.SelectSingleNode("/status");
-            if (status.InnerText == "on")
+            if (status.InnerText == "abrir")
             {
-                pictureBoxLamp.Image = lampadaLigada;
+                pictureBoxLamp.Image = garagemAberta;
             }
-            else if(status.InnerText == "off")
+            else if(status.InnerText == "fechar")
             {
-                pictureBoxLamp.Image = lampadaDesligada;
+                pictureBoxLamp.Image = garagemFechada;
             }
         }
 

@@ -63,9 +63,9 @@ namespace APP_A.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lampadaDesligada {
+        internal static System.Drawing.Bitmap garagemAberta {
             get {
-                object obj = ResourceManager.GetObject("lampadaDesligada", resourceCulture);
+                object obj = ResourceManager.GetObject("garagemAberta", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -73,9 +73,9 @@ namespace APP_A.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap lampadaLigada {
+        internal static System.Drawing.Bitmap garagemFechada {
             get {
-                object obj = ResourceManager.GetObject("lampadaLigada", resourceCulture);
+                object obj = ResourceManager.GetObject("garagemFechada", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -35,7 +35,7 @@
             // 
             // pictureBoxLamp
             // 
-            this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.lampadaDesligada;
+            this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.garagemFechada;
             this.pictureBoxLamp.Location = new System.Drawing.Point(138, 20);
             this.pictureBoxLamp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.pictureBoxLamp.Name = "pictureBoxLamp";

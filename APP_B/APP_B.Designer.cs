@@ -43,7 +43,7 @@
             this.btnLightOn.Name = "btnLightOn";
             this.btnLightOn.Size = new System.Drawing.Size(415, 132);
             this.btnLightOn.TabIndex = 0;
-            this.btnLightOn.Text = "Light ON";
+            this.btnLightOn.Text = "ABRIR GARAGEM";
             this.btnLightOn.UseVisualStyleBackColor = true;
             this.btnLightOn.Click += new System.EventHandler(this.btnLightOn_Click);
             // 
@@ -57,7 +57,7 @@
             this.btnLightOff.Name = "btnLightOff";
             this.btnLightOff.Size = new System.Drawing.Size(415, 132);
             this.btnLightOff.TabIndex = 1;
-            this.btnLightOff.Text = "Light Off";
+            this.btnLightOff.Text = "FECHAR GARAGEM";
             this.btnLightOff.UseVisualStyleBackColor = true;
             this.btnLightOff.Click += new System.EventHandler(this.btnLightOff_Click);
             // 
