@@ -107,7 +107,17 @@ namespace APP_A
             {
                 requestStream.Write(xmlBytes, 0, xmlBytes.Length);
             }
-
+            mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
+            string[] mStrTopicsInfo = { ("Lighting" + name.InnerText).ToLower() };
+            mClient.Connect(Guid.NewGuid().ToString());
+            if (!mClient.IsConnected)
+            {
+                Console.WriteLine("Error connecting to message broker...");
+                return;
+            }
+            mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
+            byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }; //QoS – depends on the topics number
+            mClient.Subscribe(mStrTopicsInfo, qosLevels);
             try
             {
                 // Get the response from the server
@@ -126,20 +136,11 @@ namespace APP_A
             }
             catch (WebException ex)
             {
+                
                 return;
             }
 
-            mClient = new MqttClient(IPAddress.Parse("127.0.0.1"));
-            string[] mStrTopicsInfo = { "Lighting" + name.InnerText };
-            mClient.Connect(Guid.NewGuid().ToString());
-            if (!mClient.IsConnected)
-            {
-                Console.WriteLine("Error connecting to message broker...");
-                return;
-            }
-            mClient.MqttMsgPublishReceived += client_MqttMsgPublishReceived;
-            byte[] qosLevels = { MqttMsgBase.QOS_LEVEL_EXACTLY_ONCE }; //QoS – depends on the topics number
-            mClient.Subscribe(mStrTopicsInfo, qosLevels);
+            
         }
 
         public void createSubscription()
