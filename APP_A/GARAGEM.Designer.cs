@@ -36,25 +36,24 @@
             // pictureBoxLamp
             // 
             this.pictureBoxLamp.Image = global::APP_A.Properties.Resources.garagemFechada;
-            this.pictureBoxLamp.Location = new System.Drawing.Point(138, 20);
-            this.pictureBoxLamp.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.pictureBoxLamp.Location = new System.Drawing.Point(104, 16);
+            this.pictureBoxLamp.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.pictureBoxLamp.Name = "pictureBoxLamp";
-            this.pictureBoxLamp.Size = new System.Drawing.Size(243, 242);
+            this.pictureBoxLamp.Size = new System.Drawing.Size(182, 197);
             this.pictureBoxLamp.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBoxLamp.TabIndex = 6;
             this.pictureBoxLamp.TabStop = false;
             // 
             // GARAGEM
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(523, 288);
+            this.ClientSize = new System.Drawing.Size(392, 234);
             this.Controls.Add(this.pictureBoxLamp);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "GARAGEM";
             this.Text = "GARAGEM";
-            this.Load += new System.EventHandler(this.APP_A_Load);
+            this.Load += new System.EventHandler(this.GARAGEM_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLamp)).EndInit();
             this.ResumeLayout(false);
 

@@ -228,7 +228,7 @@ namespace APP_A
             }
         }
 
-        private void APP_A_Load(object sender, EventArgs e)
+        private void GARAGEM_Load(object sender, EventArgs e)
         {
             createApplication();
             createContainer();
