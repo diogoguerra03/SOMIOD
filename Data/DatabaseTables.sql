@@ -74,18 +74,18 @@ SET IDENTITY_INSERT [dbo].[Container] OFF
 
 -- DATA
 SET IDENTITY_INSERT [dbo].[Data] ON
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (54, N'on1703716841420', <Binary Data>, N'2023-12-27 22:40:41', 180)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (55, N'off1703716842926', <Binary Data>, N'2023-12-27 22:40:42', 180)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (57, N'on1703716955934', <Binary Data>, N'2023-12-27 22:42:35', 180)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (59, N'abrir1704557413400', <Binary Data>, N'2024-01-06 16:10:13', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (60, N'fechar1704557414529', <Binary Data>, N'2024-01-06 16:10:14', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (61, N'abrir1704557416737', <Binary Data>, N'2024-01-06 16:10:16', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (62, N'fechar1704557417732', <Binary Data>, N'2024-01-06 16:10:17', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (63, N'abrir1704557418563', <Binary Data>, N'2024-01-06 16:10:18', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (64, N'fechar1704557419371', <Binary Data>, N'2024-01-06 16:10:19', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (65, N'abrir1704557420202', <Binary Data>, N'2024-01-06 16:10:20', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (66, N'abrir1704557421073', <Binary Data>, N'2024-01-06 16:10:21', 199)
-INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (67, N'abrir1704557422444', <Binary Data>, N'2024-01-06 16:10:22', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (54, N'on1703716841420', 0x31, N'2023-12-27 22:40:41', 180)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (55, N'off1703716842926', 0x30, N'2023-12-27 22:40:42', 180)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (57, N'on1703716955934', 0x31, N'2023-12-27 22:42:35', 180)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (59, N'abrir1704557413400', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:13', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (60, N'fechar1704557414529', 0x3C7374617475733E6665636861723C2F7374617475733E, N'2024-01-06 16:10:14', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (61, N'abrir1704557416737', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:16', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (62, N'fechar1704557417732', 0x3C7374617475733E6665636861723C2F7374617475733E, N'2024-01-06 16:10:17', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (63, N'abrir1704557418563', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:18', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (64, N'fechar1704557419371', 0x3C7374617475733E6665636861723C2F7374617475733E, N'2024-01-06 16:10:19', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (65, N'abrir1704557420202', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:20', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (66, N'abrir1704557421073', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:21', 199)
+INSERT INTO [dbo].[Data] ([Id], [Name], [Content], [Creation_DT], [Container_id]) VALUES (67, N'abrir1704557422444', 0x3C7374617475733E61627269723C2F7374617475733E, N'2024-01-06 16:10:22', 199)
 SET IDENTITY_INSERT [dbo].[Data] OFF
 
 
