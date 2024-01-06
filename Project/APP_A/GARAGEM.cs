@@ -67,7 +67,7 @@ namespace APP_A
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Aplicação Garagem criado com sucesso");
                     }
                 }
             }
@@ -130,7 +130,7 @@ namespace APP_A
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Container garage_door criado com sucesso");
                     }
                 }
             }
@@ -189,7 +189,7 @@ namespace APP_A
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Subscription sub1 criada com sucesso");
                     }
                 }
             }

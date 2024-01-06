@@ -192,7 +192,7 @@ namespace DATAANDSUB_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Eliminado com sucesso");
+                        MessageBox.Show("Data "+ data + " eliminada com sucesso");
                         loadDataListBox();
                     }
                 }
@@ -236,7 +236,7 @@ namespace DATAANDSUB_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Eliminado com sucesso");
+                        MessageBox.Show("Subscription " + sub + " eliminada com sucesso");
                         loadSubListBox();
                     }
                 }
@@ -320,7 +320,7 @@ namespace DATAANDSUB_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Data " + dataContentTextBox.Text + " criada com sucesso");
                         loadDataListBox();
                     }
                 }
@@ -411,7 +411,7 @@ namespace DATAANDSUB_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Subscription " + subNameTextBox.Text + " criada com sucesso");
                         loadSubListBox();
                     }
                 }

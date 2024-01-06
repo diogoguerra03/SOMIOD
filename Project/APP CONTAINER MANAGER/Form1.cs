@@ -83,7 +83,7 @@ namespace APP_CONTAINER_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Container " + containerNameTextBox.Text + " criado com sucesso");
                         loadContainerListBox();
                     }
                 }
@@ -192,7 +192,7 @@ namespace APP_CONTAINER_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Eliminado com sucesso");
+                        MessageBox.Show("Container " + container + " eliminado com sucesso");
                         loadContainerListBox();
                     }
                 }
@@ -254,7 +254,7 @@ namespace APP_CONTAINER_MANAGER
                         MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
                     }
 
-                    MessageBox.Show("Nome atualizado com sucesso");
+                    MessageBox.Show("Nome do container " + container + " atualizado para " + updateContainerTextBox.Text);
                     loadContainerListBox();
 
                 }

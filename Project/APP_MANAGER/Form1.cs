@@ -101,7 +101,7 @@ namespace APP_MANAGER
                 return;
             }
 
-            String app = listBoxApps.SelectedItem.ToString();
+            string app = listBoxApps.SelectedItem.ToString();
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(baseURI + "/" + app);
 
             request.Method = "DELETE";
@@ -119,7 +119,7 @@ namespace APP_MANAGER
                     }
                     else
                     {
-                        MessageBox.Show("Eliminado com sucesso");
+                        MessageBox.Show("Application " + app + " eliminada com sucesso");
                         loadListBoxApps();
                     }
                 }
@@ -145,8 +145,8 @@ namespace APP_MANAGER
                 return;
             }
 
-            String app = listBoxApps.SelectedItem.ToString();
-            String nameUpdated = txtNameToUpdate.Text;
+            string app = listBoxApps.SelectedItem.ToString();
+            string nameUpdated = txtNameToUpdate.Text;
 
             if (nameUpdated == null || nameUpdated.Length == 0)
             {
@@ -191,7 +191,7 @@ namespace APP_MANAGER
                         MessageBox.Show($"Error: {response.StatusCode} - {response.StatusDescription}");
                     }
                     loadListBoxApps();
-                    MessageBox.Show("Nome atualizado com sucesso com sucesso");
+                    MessageBox.Show("Nome da application " + app + " atualizado para " + nameUpdated);
                 }
             }
             catch (WebException ex)
@@ -209,7 +209,7 @@ namespace APP_MANAGER
 
         private void btnCreateApp_Click(object sender, EventArgs e)
         {
-            String app = txtNameToCreate.Text;
+            string app = txtNameToCreate.Text;
             if (app == null || app.Length == 0)
             {
                 MessageBox.Show("Insira um nome para a aplicação");
@@ -253,7 +253,7 @@ namespace APP_MANAGER
                     else
                     {
                         loadListBoxApps();
-                        MessageBox.Show("Criado com sucesso");
+                        MessageBox.Show("Application " + app + " criada com sucesso");
                     }
                 }
             }

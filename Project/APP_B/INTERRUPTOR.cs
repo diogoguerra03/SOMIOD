@@ -89,7 +89,15 @@ namespace APP_B
                     }
                     else
                     {
-                        MessageBox.Show("Criado com sucesso");
+                        if (name.InnerText.Contains("fechar"))
+                        {
+                            MessageBox.Show("A fechar a garagem");
+                        }
+                        if (name.InnerText.Contains("abrir"))
+                        {
+                            MessageBox.Show("A abrir a garagem");
+                        }
+
                     }
                 }
             }
@@ -150,7 +158,7 @@ namespace APP_B
                     }
                     else
                     {
-                        MessageBox.Show("Switch criado com sucesso");
+                        MessageBox.Show("Interruptor criado com sucesso");
                     }
                 }
             }
